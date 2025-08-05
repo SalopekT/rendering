@@ -1,0 +1,18 @@
+# Build results
+x64/
+Debug/
+Release/
+
+# VS folders and temp files
+.vs/
+*.VC.db
+*.VC.opendb
+*.user
+*.suo
+*.log
+*.obj
+*.pdb
+*.ipch
+*.cache
+*.ilk
+*.tlog
