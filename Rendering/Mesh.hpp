@@ -17,6 +17,7 @@ class Mesh{
         ~Mesh() {}
 
         static Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+        float* getVerticesArray();
 
         void print() const;
         
