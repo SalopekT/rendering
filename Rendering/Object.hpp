@@ -16,6 +16,8 @@ public:
     ~Object() {}
 
     void print() const;
+    float* getVerticesArray();
+    Mesh getMesh(int i);
    
 private:
     void processNode(aiNode* node, const aiScene* scene);

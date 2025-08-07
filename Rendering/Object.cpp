@@ -50,6 +50,11 @@ void Object::print() const {
 
 }
 
+Mesh Object::getMesh(int i) {
+    return this->meshes.at(i);
+}
 
 
-
+float* Object::getVerticesArray() {
+    //float* arr = new float[this->vertices.size() * 3];
+}

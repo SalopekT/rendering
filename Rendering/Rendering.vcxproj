@@ -138,6 +138,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vertex3d.cpp" />
   </ItemGroup>
@@ -145,6 +146,8 @@
     <ClInclude Include="Face3d.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="Shader.hpp" />
     <ClInclude Include="Vertex3d.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

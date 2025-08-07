@@ -19,6 +19,7 @@ int main()
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(obj->getMesh(0).getVerticesArray()), obj->getMesh(0).getVerticesArray(), GL_STATIC_DRAW);
     
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);

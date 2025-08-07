@@ -35,6 +35,16 @@ Mesh Mesh::processMesh(aiMesh* mesh, const aiScene* scene) {
     return Mesh(vertices, faces);
 }
 
+float* Mesh::getVerticesArray() {
+    float* arr = new float[this->vertices.size()*3];
+    for (int i=0;i<this->vertices.size();i++) {
+        arr[i * 3] = this->vertices.at(i)->getPosition()[0];
+        arr[i*3+1] = this->vertices.at(i)->getPosition()[1];
+        arr[i*3+2] = this->vertices.at(i)->getPosition()[2];
+    }
+    return arr;
+}
+
 
 void Mesh::print() const {
     std::cout << "Vertices: \n";
