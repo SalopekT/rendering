@@ -15,8 +15,11 @@ void processInput(GLFWwindow* window);
 int main()
 {
     Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\teapot.obj");
-    obj->print();
-    delete obj;
+    //obj->print();
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -46,6 +49,7 @@ int main()
     {
         processInput(window);
 
+        //rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -53,6 +57,7 @@ int main()
         glfwPollEvents();
     }
 
+    delete obj;
     glfwTerminate();
     return 0;
 }
