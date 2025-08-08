@@ -57,4 +57,5 @@ Mesh Object::getMesh(int i) {
 
 float* Object::getVerticesArray() {
     //float* arr = new float[this->vertices.size() * 3];
+    return nullptr;
 }
