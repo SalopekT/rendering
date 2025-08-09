@@ -18,6 +18,7 @@ class Mesh{
 
         static Mesh processMesh(aiMesh* mesh, const aiScene* scene);
         float* getVerticesArray();
+        int getNumOfVertices();
 
         void print() const;
         

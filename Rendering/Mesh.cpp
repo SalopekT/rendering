@@ -53,3 +53,9 @@ void Mesh::print() const {
     }
 
 }
+
+
+
+int Mesh::getNumOfVertices() {
+    return this->vertices.size();
+}
