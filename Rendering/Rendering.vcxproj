@@ -155,6 +155,7 @@
     <ClInclude Include="Vertex3d.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="fragmentShader1.frag" />
     <None Include="vertexShader1.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

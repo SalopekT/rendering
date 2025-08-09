@@ -88,5 +88,8 @@
     <None Include="vertexShader1.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
+    <None Include="fragmentShader1.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
