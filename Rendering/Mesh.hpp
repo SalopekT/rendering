@@ -20,6 +20,8 @@ class Mesh{
         float* getVerticesArray();
         int getNumOfVertices();
 
+        unsigned int createBuffer(); //generates VBO and VAO, returns id of VAO
+
         void print() const;
         
 };

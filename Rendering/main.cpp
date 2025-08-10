@@ -53,20 +53,7 @@ int main()
     Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\teapot.obj");
     //obj->print();
 
-    //generating and binding vertex array object
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    //generating vertex buffer object
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, obj->getMesh(0).getNumOfVertices()*3*sizeof(float), obj->getMesh(0).getVerticesArray(), GL_STATIC_DRAW);
-
-    //linking vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    unsigned int VAOid = obj->getMesh(0).createBuffer();
 
     //creating a vertex shader object
     unsigned int vertexShader;

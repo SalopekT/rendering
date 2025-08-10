@@ -7,6 +7,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <glad/glad.h>
 
 Mesh::Mesh(std::vector<std::shared_ptr<Vertex3d>> vertices, std::vector<Face3d> faces) : vertices(vertices), faces(faces) {}
 
@@ -58,4 +59,23 @@ void Mesh::print() const {
 
 int Mesh::getNumOfVertices() {
     return this->vertices.size();
+}
+
+unsigned int Mesh::createBuffer() {
+    //generating and binding vertex array object
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    //generating vertex buffer object
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, this->getNumOfVertices() * 3 * sizeof(float), this->getVerticesArray(), GL_STATIC_DRAW);
+
+    //linking vertex attributes
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    return VAO;
 }
