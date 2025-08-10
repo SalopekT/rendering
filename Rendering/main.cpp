@@ -9,6 +9,7 @@
 #include <string>
 #include "Object.hpp"
 #include "Camera.hpp"
+#include "Shader.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
 
@@ -53,80 +54,21 @@ int main()
     Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\teapot.obj");
     //obj->print();
 
-    unsigned int VAOid = obj->getMesh(0).createBuffer();
+    unsigned int VAOid = obj->getMesh(0).createBuffer(); //VAO already knows about its VBO
 
-    //creating a vertex shader object
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
-    //reading shader source code
-    std::ifstream file("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\vertexShader1.vert");
-    std::ostringstream buffer;
-    buffer << file.rdbuf();
-    std::string shaderSrcCode = buffer.str();
-    const char* shaderSrcCodePtr = shaderSrcCode.c_str();
+    Shader* vertexShader = new VertexShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\vertexShader1.vert");
+    vertexShader->createShader();
+    vertexShader->compileShader();
 
-    //compiling a shader
-    glShaderSource(vertexShader, 1, &shaderSrcCodePtr, NULL);
-    glCompileShader(vertexShader);
+    Shader* fragmentShader = new FragmentShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\fragmentShader1.frag");
+    fragmentShader->createShader();
+    fragmentShader->compileShader();
 
-    //checking if compiling succeded
-    int  success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-    
-    //creating a fragment shader object
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    //reading shader from source code
-    std::ifstream file2("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\fragmentShader1.frag");
-    std::ostringstream buffer2;
-    buffer2 << file2.rdbuf();
-    std::string shaderSrcCode2 = buffer2.str();
-    const char* shaderSrcCodePtr2 = shaderSrcCode2.c_str();
-
-    //compiling a shader
-    glShaderSource(fragmentShader, 1, &shaderSrcCodePtr2, NULL);
-    glCompileShader(fragmentShader);
-
-    //checking if compiling succeded
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    //creating a shader programme
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-
-    //linking shaders
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    //setting uniforms
-    int viewMat = glGetUniformLocation(shaderProgram, "view");
-    int projectionMat = glGetUniformLocation(shaderProgram, "projection");
-    int modelMat = glGetUniformLocation(shaderProgram, "model");
-
-    glUseProgram(shaderProgram);
-    glUniformMatrix4fv(viewMat, 1, GL_FALSE, glm::value_ptr(cam->getLookAtMatrix()));
-    glUniformMatrix4fv(projectionMat, 1, GL_FALSE, glm::value_ptr(cam->getProjectionMatrix()));
-    glUniformMatrix4fv(modelMat, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::LINKING FAILED\n" << infoLog << std::endl;
-    }
+    ShaderProgramme* shaderProgramme = new ShaderProgramme(vertexShader, fragmentShader);
+    shaderProgramme->setUniforms(glm::mat4(1.0f), cam->getLookAtMatrix(), cam->getProjectionMatrix());
+    shaderProgramme->checkLinkingSuccess();
 
     //render loop with double buffering
     while (!glfwWindowShouldClose(window))
@@ -143,8 +85,9 @@ int main()
     }
 
     delete obj;
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    delete vertexShader;
+    delete fragmentShader;
+    delete shaderProgramme;
     glfwTerminate();
     return 0;
 }

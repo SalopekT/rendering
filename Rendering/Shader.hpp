@@ -2,6 +2,9 @@
 #define SHADER_HPP
 
 #include <string>
+#include <vector>
+#include <iostream>
+#include <glm/glm.hpp>
 
 class Shader {
 	protected:
@@ -10,20 +13,45 @@ class Shader {
 
 	public:
 		Shader(std::string pathName);
+		~Shader();
+
 		virtual unsigned int createShader() = 0;
 		void compileShader();
+		unsigned int getId();
 
 };
 
 
 class VertexShader : public Shader {
 	public:
+		VertexShader(const std::string& path) : Shader(path) {}
 		unsigned int createShader() override;
 };
 
 class FragmentShader : public Shader {
 	public:
+		FragmentShader(const std::string& path) : Shader(path) {}
 		unsigned int createShader() override;
+};
+
+
+class ShaderProgramme {
+	private:
+		unsigned int id;
+
+		Shader* vs;
+		Shader* fs;
+		std::vector<Shader*> otherShaders;
+
+	public:
+		ShaderProgramme(Shader* vs, Shader* fs);
+		void setUniforms(glm::mat4 modelMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+		void checkLinkingSuccess();
+
+
+
+
+
 };
 
 #endif
