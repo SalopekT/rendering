@@ -135,6 +135,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Face3d.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Lightning.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Face3d.hpp" />
+    <ClInclude Include="Lightning.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Renderer.hpp" />

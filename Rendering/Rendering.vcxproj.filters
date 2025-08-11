@@ -22,6 +22,9 @@
     <Filter Include="Source Files\CameraSystem">
       <UniqueIdentifier>{c066cf53-e1ea-41bc-b9f4-85056c69be48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Lightning">
+      <UniqueIdentifier>{fb1f4ba7-3011-43ac-a5dc-6d71b0570837}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,6 +63,9 @@
     <ClCompile Include="OrtographicCamera.cpp">
       <Filter>Source Files\CameraSystem</Filter>
     </ClCompile>
+    <ClCompile Include="Lightning.cpp">
+      <Filter>Source Files\Lightning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Face3d.hpp">
@@ -81,6 +87,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lightning.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,7 +11,7 @@ Face3d::Face3d(std::shared_ptr<Vertex3d> v1, std::shared_ptr<Vertex3d> v2, std::
     b = normal[1];
     c = normal[2];
     d = -a * v2->getPosition()[0] - b * v2->getPosition()[1] - c * v2->getPosition()[2];
-};
+}
 
 void Face3d::print() const{
     std::cout << "First: ";
