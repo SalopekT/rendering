@@ -11,7 +11,7 @@ class Lightning {
 		glm::vec3 specularInt;
 
 	public:
-		Lightning(glm::vec3 position, float ambientInt, float diffuseInt, float specularInt);
+		Lightning(glm::vec3 position, glm::vec3 ambientInt, glm::vec3 diffuseInt, glm::vec3 specularInt);
 		//glm::vec3 getIntensityInPoint(glm::vec3 pointPosition, glm::vec3 pointNormal, glm::vec3 kAmb, glm::vec3 kDif, glm::vec3 kSpec);
 };
 

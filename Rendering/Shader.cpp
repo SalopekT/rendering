@@ -65,7 +65,7 @@ ShaderProgramme::ShaderProgramme(Shader* vs, Shader* fs) : vs(vs), fs(fs) {
     glUseProgram(this->id);
 }
 
-void ShaderProgramme::setUniforms(glm::mat4 modelMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
+void ShaderProgramme::setUniformsVertexShader(glm::mat4 modelMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
     //setting uniforms
     int viewMat = glGetUniformLocation(this->id, "view");
     int projectionMat = glGetUniformLocation(this->id, "projection");
@@ -76,6 +76,19 @@ void ShaderProgramme::setUniforms(glm::mat4 modelMatrix, glm::mat4 viewMatrix, g
     glUniformMatrix4fv(modelMat, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
 
 
+}
+
+void ShaderProgramme::setUniformsFragmentShader(glm::vec3 lightPosition, glm::mat3 lightIntensities, glm::vec3 materialLightCoefs, glm::vec3 eyePosition) {
+    //setting uniforms
+    int lightPosLoc = glGetUniformLocation(this->id, "lightPosition");
+    int lightIntensitiesLoc = glGetUniformLocation(this->id, "lightIntensities");
+    int materialLightCoefsLoc = glGetUniformLocation(this->id, "materialLightCoefs");
+    int eyePosLoc = glGetUniformLocation(this->id, "eyePosition");
+
+    glUniform3f(lightPosLoc, lightPosition[0], lightPosition[1], lightPosition[2]);
+    glUniformMatrix3fv(lightIntensitiesLoc, 1, GL_FALSE, glm::value_ptr(lightIntensities));
+    glUniform3f(materialLightCoefsLoc, materialLightCoefs[0], materialLightCoefs[1], materialLightCoefs[2]);
+    glUniform3f(eyePosLoc, eyePosition[0], eyePosition[1], eyePosition[2]);
 }
 
 void ShaderProgramme::checkLinkingSuccess() {

@@ -10,13 +10,30 @@ out vec4 FragColor;
 uniform vec3 lightPosition;
 uniform mat3 lightIntensities; //first column ambient(r,g,b), second diffuse(r,g,b), third specular(r,g,b)
 uniform vec3 materialLightCoefs;
+uniform vec3 eyePosition;
     
 void main()
 {
+    //ambient calculations
     vec3 ambientLightInts = lightIntensities[0];
     vec3 ambientColor = materialLightCoefs[0]*ambientLightInts;
 
+    //diffuse calculations
     vec3 vectorToLight = lightPosition - FragPos;
+    float scalarProductDiffuse = max(0,dot(Normal, vectorToLight));
+    vec3 diffuseLightInts = lightIntensities[1];
+    vec3 diffuseColor = materialLightCoefs[1]*diffuseLightInts*scalarProductDiffuse;
 
-    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    //specular calculations
+    vec3 vectorToEye = eyePosition - FragPos;
+    vec3 halfVector = (vectorToLight + vectorToEye)/2; // this is an approximation of a reflected ray from light to FragPos to Eye
+    float scalarProductSpecular = max(0, pow(dot(halfVector, Normal),100.0f));
+    vec3 specularLightInts = lightIntensities[2];
+    vec3 specularColor = materialLightCoefs*specularLightInts*scalarProductSpecular;
+
+    vec3 color = ambient + diffuse + specular;
+    color = clamp(color, 0.0, 1.0);
+
+
+    FragColor = vec4(color, 1.0f);
 } 

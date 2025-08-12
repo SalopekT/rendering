@@ -10,6 +10,7 @@
 #include "Object.hpp"
 #include "Camera.hpp"
 #include "Shader.hpp"
+#include "Lightning.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
 
@@ -50,6 +51,14 @@ int main()
     glm::vec3 camViewUp(0, 1, 0);
     Camera* cam = new PerspectiveCamera(camPosition, camCenter, camViewUp, 45.0f, 800, 600, 0.01f, 100.0f);
 
+    //light settings
+    glm::vec3 lightPosition(10, 10, 10);
+    glm::vec3 lightAmbient(0.5f, 0.5f, 0.5f);
+    glm::vec3 lightDiffuse(0.5f, 0.5f, 0.5f);
+    glm::vec3 lightSpecular(0.5f, 0.5f, 0.5f);
+    Lightning* lightSrc = new Lightning(lightPosition, lightAmbient, lightDiffuse, lightSpecular);
+
+
     //object creation
     Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\teapot.obj");
     //obj->print();
@@ -67,7 +76,8 @@ int main()
 
 
     ShaderProgramme* shaderProgramme = new ShaderProgramme(vertexShader, fragmentShader);
-    shaderProgramme->setUniforms(glm::mat4(1.0f), cam->getLookAtMatrix(), cam->getProjectionMatrix());
+    shaderProgramme->setUniformsVertexShader(glm::mat4(1.0f), cam->getLookAtMatrix(), cam->getProjectionMatrix());
+    shaderProgramme->setUniformsFragmentShader()
     shaderProgramme->checkLinkingSuccess();
 
     //render loop with double buffering
@@ -85,6 +95,8 @@ int main()
     }
 
     delete obj;
+    delete cam;
+    delete lightSrc;
     delete vertexShader;
     delete fragmentShader;
     delete shaderProgramme;
