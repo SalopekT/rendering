@@ -77,7 +77,7 @@ int main()
 
     ShaderProgramme* shaderProgramme = new ShaderProgramme(vertexShader, fragmentShader);
     shaderProgramme->setUniformsVertexShader(glm::mat4(1.0f), cam->getLookAtMatrix(), cam->getProjectionMatrix());
-    shaderProgramme->setUniformsFragmentShader()
+    shaderProgramme->setUniformsFragmentShader();
     shaderProgramme->checkLinkingSuccess();
 
     //render loop with double buffering
