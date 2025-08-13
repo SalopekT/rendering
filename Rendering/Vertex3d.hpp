@@ -5,8 +5,9 @@ class Vertex3d{
     private:
         glm::vec3 position;
         glm::vec3 normal;
+        glm::vec2 uv;
     public:
-        Vertex3d(double, double, double);
+        Vertex3d(double, double, double, double, double, double, double, double);
         ~Vertex3d() {}
 
         void print() const;

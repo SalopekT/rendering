@@ -3,8 +3,10 @@
 #include <iomanip>
 #include <glm/glm.hpp>
 
-Vertex3d::Vertex3d(double x, double y, double z){
+Vertex3d::Vertex3d(double x, double y, double z, double a, double b, double c, double u, double v){
     this->position = glm::vec3(x, y, z);
+    this->normal = glm::vec3(a, b, c);
+    this->uv = glm::vec2(u, v);
 }
 
 void Vertex3d::print() const{

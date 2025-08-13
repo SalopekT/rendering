@@ -15,8 +15,12 @@
 
 
 
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+void processInput(GLFWwindow* window, Camera* cam);
+
+int width = 1200;
+int height = 1000;
 
 
 int main()
@@ -27,7 +31,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(width, height, "Programme", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -43,25 +47,35 @@ int main()
         return -1;
     }
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, width, height);
+
+    //backface culling
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
+    //depth test enabling
+    glEnable(GL_DEPTH_TEST);
 
     //camera settings
-    glm::vec3 camPosition(10, 0, 0);
+    glm::vec3 camPosition(10, 10, 5);
     glm::vec3 camCenter(0, 0, 0);
     glm::vec3 camViewUp(0, 1, 0);
-    Camera* cam = new PerspectiveCamera(camPosition, camCenter, camViewUp, 45.0f, 800, 600, 0.01f, 100.0f);
+    Camera* cam = new PerspectiveCamera(camPosition, camCenter, camViewUp, 45.0f, width, height, 0.01f, 100.0f);
 
     //light settings
     glm::vec3 lightPosition(10, 10, 10);
-    glm::vec3 lightAmbient(0.5f, 0.5f, 0.5f);
+    glm::vec3 lightAmbient(0.6f, 0.6f, 0.6f);
     glm::vec3 lightDiffuse(0.5f, 0.5f, 0.5f);
     glm::vec3 lightSpecular(0.5f, 0.5f, 0.5f);
     Lightning* lightSrc = new Lightning(lightPosition, lightAmbient, lightDiffuse, lightSpecular);
 
 
     //object creation
-    Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\teapot.obj");
+    //Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\boombox_4k.fbx");
+    Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\dragon.obj");
     //obj->print();
+
 
     unsigned int VAOid = obj->getMesh(0).createBuffer(); //VAO already knows about its VBO
 
@@ -76,18 +90,33 @@ int main()
 
 
     ShaderProgramme* shaderProgramme = new ShaderProgramme(vertexShader, fragmentShader);
+<<<<<<< HEAD
     shaderProgramme->setUniformsVertexShader(glm::mat4(1.0f), cam->getLookAtMatrix(), cam->getProjectionMatrix());
     shaderProgramme->setUniformsFragmentShader();
+=======
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::scale(model, glm::vec3(8.0f));
+    shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
+    glm::vec3 material(0.8f, 0.8f, 0.3f);
+    shaderProgramme->setUniformsFragmentShader(lightSrc->getLightPosition(), lightSrc->getIntensitiesMatrix(), material, cam->getCameraPosition());
+>>>>>>> f8b71e5 (basic rendering done, started textures)
     shaderProgramme->checkLinkingSuccess();
 
     //render loop with double buffering
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window);
+        processInput(window, cam);
 
+        //changing uniforms if needed
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(8.0f));
+
+        shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
+        shaderProgramme->setUniformsFragmentShader(lightSrc->getLightPosition(), lightSrc->getIntensitiesMatrix(), material, cam->getCameraPosition());
+        
         //rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glDrawArrays(GL_TRIANGLES, 0, obj->getMesh(0).getNumOfVertices());
 
         glfwSwapBuffers(window);
@@ -109,8 +138,26 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-void processInput(GLFWwindow* window)
+void processInput(GLFWwindow* window, Camera* cam)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    {
+        cam->moveCamera(1);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    {
+        cam->moveCamera(2);
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    {
+        cam->moveCamera(3);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    {
+        cam->moveCamera(4);
+    }
 }

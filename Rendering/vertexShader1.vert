@@ -12,6 +12,6 @@ out vec3 FragPos; //Frag position is position in world coordinates (view and pro
 void main()
 {
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
-	FragPos = vec3(model * vec4(position, 1.0f));
-	Normal = normal;
+	FragPos = vec3(model * vec4(aPos, 1.0f));
+	Normal = normal; //this Normal value is interpolated so that Phong shading works
 }

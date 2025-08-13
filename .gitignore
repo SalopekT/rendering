@@ -16,3 +16,6 @@ Release/
 *.cache
 *.ilk
 *.tlog
+
+#objects
+Objects/

@@ -35,6 +35,8 @@ void Shader::compileShader() {
     std::ostringstream buffer;
     buffer << file.rdbuf();
     std::string shaderSrcCode = buffer.str();
+    //std::cout << shaderSrcCode << std::endl;
+
     const char* shaderSrcCodePtr = shaderSrcCode.c_str();
 
     //compiling a shader
@@ -73,7 +75,7 @@ void ShaderProgramme::setUniformsVertexShader(glm::mat4 modelMatrix, glm::mat4 v
 
     glUniformMatrix4fv(viewMat, 1, GL_FALSE, glm::value_ptr(viewMatrix));
     glUniformMatrix4fv(projectionMat, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-    glUniformMatrix4fv(modelMat, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
+    glUniformMatrix4fv(modelMat, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
 
 }

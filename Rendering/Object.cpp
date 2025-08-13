@@ -12,7 +12,7 @@ Object::Object(const std::string& pathName) {
 
     // https://learnopengl.com/Model-Loading/Model
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(pathName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
+    const aiScene* scene = importer.ReadFile(pathName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {

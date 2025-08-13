@@ -17,7 +17,14 @@ Mesh Mesh::processMesh(aiMesh* mesh, const aiScene* scene) {
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
-        std::shared_ptr<Vertex3d> vertex = std::make_shared<Vertex3d>(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+        glm::vec2 texCoords(0.0f, 0.0f); // default if no UVs
+        if (mesh->HasTextureCoords(0)) {
+            texCoords.x = mesh->mTextureCoords[0][i].x;
+            texCoords.y = mesh->mTextureCoords[0][i].y;
+        }
+        std::shared_ptr<Vertex3d> vertex = std::make_shared<Vertex3d>(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 
+                                                                      mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z,
+                                                                      texCoords.x, texCoords.y);
         vertices.push_back(vertex);
     }
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -36,12 +43,19 @@ Mesh Mesh::processMesh(aiMesh* mesh, const aiScene* scene) {
     return Mesh(vertices, faces);
 }
 
+//this returns not just positions, but normals and other stuff
 float* Mesh::getVerticesArray() {
-    float* arr = new float[this->vertices.size()*3];
+    float* arr = new float[this->vertices.size()*6];
     for (int i=0;i<this->vertices.size();i++) {
-        arr[i * 3] = this->vertices.at(i)->getPosition()[0];
-        arr[i*3+1] = this->vertices.at(i)->getPosition()[1];
-        arr[i*3+2] = this->vertices.at(i)->getPosition()[2];
+        arr[i * 6] = this->vertices.at(i)->getPosition()[0];
+        arr[i*6+1] = this->vertices.at(i)->getPosition()[1];
+        arr[i*6+2] = this->vertices.at(i)->getPosition()[2];
+
+        arr[i * 6+3] = this->vertices.at(i)->getNormal()[0];
+        arr[i * 6 + 4] = this->vertices.at(i)->getNormal()[1];
+        arr[i * 6 + 5] = this->vertices.at(i)->getNormal()[2];
+
+        //v1.x,v1.y,v1.z,v1.a,v1.b,v1.c,v2.x,v2,y,...
     }
     return arr;
 }
@@ -71,11 +85,13 @@ unsigned int Mesh::createBuffer() {
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, this->getNumOfVertices() * 3 * sizeof(float), this->getVerticesArray(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, this->getNumOfVertices() * 6 * sizeof(float), this->getVerticesArray(), GL_STATIC_DRAW);
 
     //linking vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
     return VAO;
 }

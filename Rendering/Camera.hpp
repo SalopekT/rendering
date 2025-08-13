@@ -9,8 +9,11 @@ class Camera {
 
 	public:
 		Camera(glm::vec3 position, glm::vec3 center, glm::vec3 viewUpVector);
+		glm::vec3 getCameraPosition(); //eye position
 		glm::mat4 getLookAtMatrix(); //viewMatrix
 		virtual glm::mat4 getProjectionMatrix() = 0;
+
+		void moveCamera(int direction);
 		
 	
 };
