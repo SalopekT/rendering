@@ -52,3 +52,8 @@ void Vertex3d::setNormal(glm::vec3 newNormal) {
 glm::vec3 Vertex3d::getNormal(){
     return normal;
 }
+
+
+glm::vec2 Vertex3d::getUVs() {
+    return uv;
+}

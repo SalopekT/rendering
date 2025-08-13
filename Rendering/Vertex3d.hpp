@@ -23,9 +23,9 @@ class Vertex3d{
         void setB(double);
         void setC(double);
         void setNormal(glm::vec3 newNormal);
-
-
         glm::vec3 getNormal();
+
+        glm::vec2 getUVs();
 
 
 

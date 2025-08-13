@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Lightning">
       <UniqueIdentifier>{fb1f4ba7-3011-43ac-a5dc-6d71b0570837}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ImageLoadingLib">
+      <UniqueIdentifier>{c48b5173-1613-4f36-8705-3f8277079d32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +69,9 @@
     <ClCompile Include="Lightning.cpp">
       <Filter>Source Files\Lightning</Filter>
     </ClCompile>
+    <ClCompile Include="stb_image.cpp">
+      <Filter>Header Files\ImageLoadingLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Face3d.hpp">
@@ -91,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="Lightning.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files\ImageLoadingLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

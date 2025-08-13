@@ -2,6 +2,7 @@
 
 in vec3 Normal;
 in vec3 FragPos;
+in vec2 TexCoord;
 
 out vec4 FragColor;
 
@@ -11,6 +12,9 @@ uniform vec3 lightPosition;
 uniform mat3 lightIntensities; //first column ambient(r,g,b), second diffuse(r,g,b), third specular(r,g,b)
 uniform vec3 materialLightCoefs;
 uniform vec3 eyePosition;
+uniform sampler2D texture1;
+
+uniform bool hasTexture;
     
 void main()
 {
@@ -33,7 +37,9 @@ void main()
 
     vec3 color = ambientColor + diffuseColor + specularColor;
     color = clamp(color, 0.0, 1.0);
+    vec3 baseColor = texture(texture1, TexCoord).rgb;
 
+    if (hasTexture) FragColor = vec4(baseColor*color, 1.0f);
+    else  FragColor = vec4(color, 1.0f);
 
-    FragColor = vec4(color, 1.0f);
 } 

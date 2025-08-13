@@ -46,7 +46,8 @@ class ShaderProgramme {
 	public:
 		ShaderProgramme(Shader* vs, Shader* fs);
 		void setUniformsVertexShader(glm::mat4 modelMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
-		void setUniformsFragmentShader(glm::vec3 lightPosition, glm::mat3 lightIntensities, glm::vec3 materialLightCoefs, glm::vec3 eyePosition);
+		void setUniformsFragmentShader(glm::vec3 lightPosition, glm::mat3 lightIntensities, glm::vec3 materialLightCoefs, glm::vec3 eyePosition,
+									   bool hasTexture);
 		void checkLinkingSuccess();
 
 
