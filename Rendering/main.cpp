@@ -90,16 +90,11 @@ int main()
 
 
     ShaderProgramme* shaderProgramme = new ShaderProgramme(vertexShader, fragmentShader);
-<<<<<<< HEAD
-    shaderProgramme->setUniformsVertexShader(glm::mat4(1.0f), cam->getLookAtMatrix(), cam->getProjectionMatrix());
-    shaderProgramme->setUniformsFragmentShader();
-=======
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::scale(model, glm::vec3(8.0f));
     shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
     glm::vec3 material(0.8f, 0.8f, 0.3f);
     shaderProgramme->setUniformsFragmentShader(lightSrc->getLightPosition(), lightSrc->getIntensitiesMatrix(), material, cam->getCameraPosition());
->>>>>>> f8b71e5 (basic rendering done, started textures)
     shaderProgramme->checkLinkingSuccess();
 
     //render loop with double buffering
