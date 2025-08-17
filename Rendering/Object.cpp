@@ -7,12 +7,14 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "stb_image.h"
+#include <glad/glad.h>
 
-Object::Object(const std::string& pathName) {
+Object::Object(const std::string& pathToModel, const std::string& pathToTexture) : pathToModel(pathToModel), pathToTexture(pathToTexture){
 
     // https://learnopengl.com/Model-Loading/Model
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(pathName, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
+    const aiScene* scene = importer.ReadFile(pathToModel, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -50,7 +52,7 @@ void Object::print() const {
 
 }
 
-Mesh Object::getMesh(int i) {
+Mesh& Object::getMesh(int i) {
     return this->meshes.at(i);
 }
 
@@ -58,4 +60,35 @@ Mesh Object::getMesh(int i) {
 float* Object::getVerticesArray() {
     //float* arr = new float[this->vertices.size() * 3];
     return nullptr;
+}
+
+
+unsigned int Object::generateTexture() {
+    //generating a texture
+    int width1, height1, nrChannels;
+    unsigned char* data = stbi_load(this->pathToTexture.c_str(), &width1, &height1, &nrChannels, 0);
+
+    if (data) {
+        unsigned int texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width1, height1, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        stbi_image_free(data);
+        //selecting a texture unit
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        this->textureId = texture;
+        return texture;
+    }
+    return 0;
+}
+
+void Object::drawObject(ShaderProgramme* sp, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projectionMat) {
+    for (Mesh& mesh : this->meshes) {
+        if (this->textureId != 0) glBindTexture(GL_TEXTURE_2D, this->textureId);
+        mesh.drawMesh(sp, modelMat, viewMat, projectionMat);
+    }
+
 }
