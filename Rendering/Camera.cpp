@@ -12,30 +12,43 @@ glm::vec3 Camera::getCameraPosition() {
 }
 
 void Camera::moveCamera(int direction) {
-	float radiusXZ = std::sqrt(position[0] * position[0] + position[2] * position[2]);
+	/*float radiusXZ = std::sqrt(position[0] * position[0] + position[2] * position[2]);
 	float currentAngleXZ = std::atan2(this->position[2], this->position[0]);
 
 	float radiusXY = std::sqrt(position[0] * position[0] + position[1] * position[1]);
 	float currentAngleXY = std::atan2(this->position[1], this->position[0]);
 	if (direction == 1) {//left
-		currentAngleXZ += 0.03f;
+		currentAngleXZ += 0.01f;
 		this->position[0] = radiusXZ * std::cos(currentAngleXZ);
 		this->position[2] = radiusXZ * std::sin(currentAngleXZ);
 	}
 	else if (direction == 2){
-		currentAngleXZ -= 0.03f;
+		currentAngleXZ -= 0.01f;
 		this->position[0] = radiusXZ * std::cos(currentAngleXZ);
 		this->position[2] = radiusXZ * std::sin(currentAngleXZ);
 	}
 	else if (direction == 3) {
-		currentAngleXY -= 0.03f;
+		currentAngleXY -= 0.01f;
 		this->position[0] = radiusXY * std::cos(currentAngleXY);
 		this->position[1] = radiusXY * std::sin(currentAngleXY);
 	}
 	else {
-		currentAngleXY += 0.03f;
+		currentAngleXY += 0.01f;
 		this->position[0] = radiusXY * std::cos(currentAngleXY);
 		this->position[1] = radiusXY * std::sin(currentAngleXY);
+	}*/
+	if (direction == 1) {//left
+		this->position[0] -= 0.01f;
 	}
+	else if (direction == 2) {
+		this->position[0] += 0.01f;
+	}
+	else if (direction == 3) {
+		this->position[1] -= 0.01f;
+	}
+	else {
+		this->position[1] += 0.01f;
+	}
+
 	
 }

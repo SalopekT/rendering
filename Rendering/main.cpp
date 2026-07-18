@@ -64,26 +64,33 @@ int main()
     glm::vec3 camViewUp(0, 1, 0);
     Camera* cam = new PerspectiveCamera(camPosition, camCenter, camViewUp, 45.0f, width, height, 0.01f, 100.0f);
 
-    //light settings
-    glm::vec3 lightPosition(10, 10, 10);
-    glm::vec3 lightAmbient(0.9f, 0.6f, 0.6f);
-    glm::vec3 lightDiffuse(0.9f, 0.5f, 0.5f);
-    glm::vec3 lightSpecular(0.9f, 0.5f, 0.5f);
-    Lightning* lightSrc = new Lightning(lightPosition, lightAmbient, lightDiffuse, lightSpecular);
+    //light settings, multiple lights
+    glm::vec3 light1Position(10, 10, 10);
+    glm::vec3 light1Ambient(0.4f, 0.4f, 0.4f);
+    glm::vec3 light1Diffuse(0.9f, 0.1f, 0.1f);
+    glm::vec3 light1Specular(0.9f, 0.1f, 0.1f);
+    Lightning* light1Src = new Lightning(light1Position, light1Ambient, light1Diffuse, light1Specular);
 
+    glm::vec3 light2Position(10, -10, -10);
+    glm::vec3 light2Ambient(0.1f, 0.9f, 0.1f);
+    glm::vec3 light2Diffuse(0.1f, 0.9f, 0.1f);
+    glm::vec3 light2Specular(0.1f, 0.9f, 0.1f);
+    Lightning* light2Src = new Lightning(light2Position, light2Ambient, light2Diffuse, light2Specular);
 
+    glm::vec3 lightsPositions[2] = { light1Position,light2Position };
+    glm::mat3 lightsIntMats[2] = { light1Src->getIntensitiesMatrix(), light2Src->getIntensitiesMatrix()};
     //object creation
-    //Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\boombox_4k.fbx");
-    Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\porsche.obj", "");
+    Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\donny.fbx","C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\donny.png");
+    //Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\dragon.obj", "");
     //obj->print();
 
-    Object* obj2 = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\boombox_4k.fbx", "C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\textures\\boombox_diff_4k.jpg");
+    //Object* obj2 = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\boombox_4k.fbx", "C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\textures\\boombox_diff_4k.jpg");
 
     unsigned int VAOid = obj->getMesh(0).createBuffer(); //VAO already knows about its VBO
     obj->generateTexture();
     
-    unsigned int VAOid2 = obj2->getMesh(0).createBuffer();
-    obj2->generateTexture();
+    /*unsigned int VAOid2 = obj2->getMesh(0).createBuffer();
+    obj2->generateTexture();*/
 
 
     Shader* vertexShader = new VertexShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\vertexShader1.vert");
@@ -99,9 +106,9 @@ int main()
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 model2 = glm::translate(model, glm::vec3(5.0, 0.0, 0.0));
     model = glm::scale(model, glm::vec3(8.0f));
-    //shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
-    glm::vec3 material(0.8f, 0.8f, 0.3f);
-    shaderProgramme->setUniformsFragmentShader(lightSrc->getLightPosition(), lightSrc->getIntensitiesMatrix(), material, cam->getCameraPosition(),true);
+    shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
+    glm::vec3 material(0.8f, 0.8f, 0.8f);
+    shaderProgramme->setUniformsFragmentShader(2, lightsPositions, lightsIntMats, material, cam->getCameraPosition(),true);
     shaderProgramme->checkLinkingSuccess();
 
     //render loop with double buffering
@@ -114,14 +121,14 @@ int main()
         model = glm::scale(model, glm::vec3(8.0f));
 
         shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
-        shaderProgramme->setUniformsFragmentShader(lightSrc->getLightPosition(), lightSrc->getIntensitiesMatrix(), material, cam->getCameraPosition(),true);
+        shaderProgramme->setUniformsFragmentShader(2, lightsPositions, lightsIntMats, material, cam->getCameraPosition(),true);
         
         //rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //glDrawArrays(GL_TRIANGLES, 0, obj->getMesh(0).getNumOfVertices());
         obj->drawObject(shaderProgramme,model,cam->getLookAtMatrix(),cam->getProjectionMatrix());
-        obj2->drawObject(shaderProgramme, model2, cam->getLookAtMatrix(), cam->getProjectionMatrix());
+        //obj2->drawObject(shaderProgramme, model2, cam->getLookAtMatrix(), cam->getProjectionMatrix());
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -129,7 +136,8 @@ int main()
 
     delete obj;
     delete cam;
-    delete lightSrc;
+    delete light1Src;
+    delete light2Src;
     delete vertexShader;
     delete fragmentShader;
     delete shaderProgramme;

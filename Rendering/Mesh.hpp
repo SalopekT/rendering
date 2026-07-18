@@ -12,11 +12,12 @@ class Mesh{
     private:
         std::vector<std::shared_ptr<Vertex3d>> vertices;
         std::vector<Face3d> faces;
+        std::vector<unsigned int> indices;
 
         unsigned int VAO;
 
     public:
-        Mesh(std::vector<std::shared_ptr<Vertex3d>> vertices, std::vector<Face3d> faces);
+        Mesh(std::vector<std::shared_ptr<Vertex3d>> vertices, std::vector<Face3d> faces, std::vector<unsigned int> indices);
         ~Mesh() {}
 
         static Mesh processMesh(aiMesh* mesh, const aiScene* scene);

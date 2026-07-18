@@ -80,23 +80,24 @@ void ShaderProgramme::setUniformsVertexShader(glm::mat4 modelMatrix, glm::mat4 v
 
 }
 
-void ShaderProgramme::setUniformsFragmentShader(glm::vec3 lightPosition, glm::mat3 lightIntensities, glm::vec3 materialLightCoefs, glm::vec3 eyePosition, bool hasTexture) {
+void ShaderProgramme::setUniformsFragmentShader(int numLights, glm::vec3* lightPosition, glm::mat3* lightIntensities, glm::vec3 materialLightCoefs, glm::vec3 eyePosition, bool hasTexture) {
     //setting uniforms
-    int lightPosLoc = glGetUniformLocation(this->id, "lightPosition");
+    int numLightsLoc = glGetUniformLocation(this->id, "numLights");
+    int lightPosLoc = glGetUniformLocation(this->id, "lightPositions");
     int lightIntensitiesLoc = glGetUniformLocation(this->id, "lightIntensities");
     int materialLightCoefsLoc = glGetUniformLocation(this->id, "materialLightCoefs");
     int eyePosLoc = glGetUniformLocation(this->id, "eyePosition");
     int textureLoc = glGetUniformLocation(this->id, "texture1");
 
-    glUniform3f(lightPosLoc, lightPosition[0], lightPosition[1], lightPosition[2]);
-    glUniformMatrix3fv(lightIntensitiesLoc, 1, GL_FALSE, glm::value_ptr(lightIntensities));
-    glUniform3f(materialLightCoefsLoc, materialLightCoefs[0], materialLightCoefs[1], materialLightCoefs[2]);
-    glUniform3f(eyePosLoc, eyePosition[0], eyePosition[1], eyePosition[2]);
+    glUniform1i(numLightsLoc, numLights);
+    glUniform3fv(lightPosLoc, numLights, glm::value_ptr(lightPosition[0]));
+    glUniformMatrix3fv(lightIntensitiesLoc, numLights, GL_FALSE, glm::value_ptr(lightIntensities[0]));
+    glUniform3f(materialLightCoefsLoc, materialLightCoefs.x, materialLightCoefs.y, materialLightCoefs.z);
+    glUniform3f(eyePosLoc, eyePosition.x, eyePosition.y, eyePosition.z);
 
     if (hasTexture) {
         glUniform1i(textureLoc, 0);
         glUniform1i(glGetUniformLocation(this->id, "hasTexture"), 1);
-
     }
     else {
         glUniform1i(glGetUniformLocation(this->id, "hasTexture"), 0);

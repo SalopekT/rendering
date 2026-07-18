@@ -10,11 +10,13 @@
 #include <assimp/postprocess.h>
 #include <glad/glad.h>
 
-Mesh::Mesh(std::vector<std::shared_ptr<Vertex3d>> vertices, std::vector<Face3d> faces) : vertices(vertices), faces(faces) {}
+Mesh::Mesh(std::vector<std::shared_ptr<Vertex3d>> vertices, std::vector<Face3d> faces, std::vector<unsigned int> indices) 
+                                                                                   : vertices(vertices), faces(faces), indices(indices) {}
 
 Mesh Mesh::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<std::shared_ptr<Vertex3d>> vertices;
     std::vector<Face3d> faces;
+    std::vector<unsigned int> indices;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -31,7 +33,6 @@ Mesh Mesh::processMesh(aiMesh* mesh, const aiScene* scene) {
     }
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
-        std::vector<unsigned int> indices;
         for (unsigned int j = 0; j < mesh->mFaces[i].mNumIndices; j++) {
             unsigned int vertexIndex = mesh->mFaces[i].mIndices[j];
             indices.push_back(vertexIndex);
@@ -42,7 +43,7 @@ Mesh Mesh::processMesh(aiMesh* mesh, const aiScene* scene) {
     }
 
 
-    return Mesh(vertices, faces);
+    return Mesh(vertices, faces, indices);
 }
 
 //this returns not just positions, but normals and other stuff
@@ -93,6 +94,12 @@ unsigned int Mesh::createBuffer() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, this->getNumOfVertices() * 8 * sizeof(float), this->getVerticesArray(), GL_STATIC_DRAW);
 
+    //generating element buffer object(this is used for indexed draws)
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+
     //linking vertex attributes
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -110,5 +117,6 @@ unsigned int Mesh::createBuffer() {
 void Mesh::drawMesh(ShaderProgramme* sp, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projectionMat) {
     glBindVertexArray(this->VAO);
     sp->setUniformsVertexShader(modelMat, viewMat, projectionMat);
-    glDrawArrays(GL_TRIANGLES, 0, this->getNumOfVertices());
+    //glDrawArrays(GL_TRIANGLES, 0, this->getNumOfVertices());
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
