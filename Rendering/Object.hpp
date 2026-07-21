@@ -15,6 +15,7 @@ private:
     std::vector<Mesh> meshes;
 
 public:
+    Object(const std::vector<Mesh>& meshes);
     Object(const std::string& pathToModel, const std::string& pathToTexture);
     Object copy(); //copy constructor
     ~Object() {}

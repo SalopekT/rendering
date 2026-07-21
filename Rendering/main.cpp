@@ -23,6 +23,7 @@ void processInput(GLFWwindow* window, Camera* cam);
 int width = 1200;
 int height = 1000;
 
+const int MAX_LIGHTS = 16;
 
 int main()
 {
@@ -59,26 +60,68 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     //camera settings
-    glm::vec3 camPosition(10, 10, 5);
+    glm::vec3 camPosition(-10, -10, 5);
     glm::vec3 camCenter(0, 0, 0);
-    glm::vec3 camViewUp(0, 1, 0);
+    glm::vec3 camViewUp(0, 0, 1);
     Camera* cam = new PerspectiveCamera(camPosition, camCenter, camViewUp, 45.0f, width, height, 0.01f, 100.0f);
 
     //light settings, multiple lights
     glm::vec3 light1Position(10, 10, 10);
-    glm::vec3 light1Ambient(0.4f, 0.4f, 0.4f);
+    glm::vec3 light1Ambient(0.1f, 0.1f, 0.1f);  //ambient component of the first light source is main ambient component
     glm::vec3 light1Diffuse(0.9f, 0.1f, 0.1f);
     glm::vec3 light1Specular(0.9f, 0.1f, 0.1f);
     Lightning* light1Src = new Lightning(light1Position, light1Ambient, light1Diffuse, light1Specular);
 
-    glm::vec3 light2Position(10, -10, -10);
+    glm::vec3 light2Position(10, -10, 10);
     glm::vec3 light2Ambient(0.1f, 0.9f, 0.1f);
     glm::vec3 light2Diffuse(0.1f, 0.9f, 0.1f);
     glm::vec3 light2Specular(0.1f, 0.9f, 0.1f);
     Lightning* light2Src = new Lightning(light2Position, light2Ambient, light2Diffuse, light2Specular);
 
-    glm::vec3 lightsPositions[2] = { light1Position,light2Position };
-    glm::mat3 lightsIntMats[2] = { light1Src->getIntensitiesMatrix(), light2Src->getIntensitiesMatrix()};
+    glm::vec3 lightsPositions[MAX_LIGHTS] = {}; 
+    glm::mat3 lightsIntMats[MAX_LIGHTS] = {};
+    glm::vec3 lightsDirections[MAX_LIGHTS] = {};
+    float lightsCutoffAngles[MAX_LIGHTS] = {}; //this is the inner cone, outer cone will be this+alpha lets say
+    int lightTypes[16] = {};
+
+
+    lightsPositions[0] = light1Position;
+    lightsPositions[1] = light2Position;
+
+    lightsIntMats[0] = light1Src->getIntensitiesMatrix();
+    lightsIntMats[1] = light2Src->getIntensitiesMatrix();
+
+    lightTypes[0] = 1;
+    lightTypes[1] = 1;
+
+    int numLights = 2;
+
+    //creating a floor object so i can show shadow mapping
+    double size = 100.0;
+
+    std::vector<std::shared_ptr<Vertex3d>> vertices = {
+        std::make_shared<Vertex3d>(-size, -size, 0.0,   0.0, 0.0, 1.0,   0.0, 0.0), 
+        std::make_shared<Vertex3d>(size, -size, 0.0,   0.0, 0.0, 1.0,   1.0, 0.0), 
+        std::make_shared<Vertex3d>(size,  size, 0.0,   0.0, 0.0, 1.0,   1.0, 1.0), 
+        std::make_shared<Vertex3d>(-size,  size, 0.0,   0.0, 0.0, 1.0,   0.0, 1.0)
+    };
+
+    std::vector<unsigned int> indices = {
+        0, 1, 2,  
+        0, 2, 3 
+    };
+
+    std::vector<Face3d> faces = {
+        Face3d(vertices.at(0), vertices.at(1), vertices.at(2)),
+        Face3d(vertices.at(0), vertices.at(2), vertices.at(3))
+    };
+
+    Mesh floor(vertices, faces, indices);
+    Object* floorObj = new Object(std::vector<Mesh>{floor});
+    unsigned int VAOidFloor = floorObj->getMesh(0).createBuffer(); //VAO already knows about its VBO
+    floorObj->generateTexture();
+
+
     //object creation
     Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\donny.fbx","C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\donny.png");
     //Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\dragon.obj", "");
@@ -104,30 +147,42 @@ int main()
 
     ShaderProgramme* shaderProgramme = new ShaderProgramme(vertexShader, fragmentShader);
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 model2 = glm::translate(model, glm::vec3(5.0, 0.0, 0.0));
+    model = glm::translate(model, glm::vec3(0.0, 0.0, 5.0));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0, 1));
     model = glm::scale(model, glm::vec3(8.0f));
     shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
     glm::vec3 material(0.8f, 0.8f, 0.8f);
-    shaderProgramme->setUniformsFragmentShader(2, lightsPositions, lightsIntMats, material, cam->getCameraPosition(),true);
+    shaderProgramme->setUniformsFragmentShader(2, lightTypes,lightsPositions, lightsIntMats,
+        lightsDirections, lightsCutoffAngles,material, cam->getCameraPosition(),false);
     shaderProgramme->checkLinkingSuccess();
 
     //render loop with double buffering
     while (!glfwWindowShouldClose(window))
     {
         processInput(window, cam);
-
-        //changing uniforms if needed
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(8.0f));
-
-        shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
-        shaderProgramme->setUniformsFragmentShader(2, lightsPositions, lightsIntMats, material, cam->getCameraPosition(),true);
         
         //rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //glDrawArrays(GL_TRIANGLES, 0, obj->getMesh(0).getNumOfVertices());
+        //changing uniforms if needed
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0, 0.0, 5.0));
+        //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+        model = glm::scale(model, glm::vec3(2.0f));
+        shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
+        shaderProgramme->setUniformsFragmentShader(numLights, lightTypes,lightsPositions, lightsIntMats,
+                                            lightsDirections, lightsCutoffAngles,material, cam->getCameraPosition(), true);
         obj->drawObject(shaderProgramme,model,cam->getLookAtMatrix(),cam->getProjectionMatrix());
+        //changing uniforms if needed
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0, 0.0, 0.0));
+        //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0, 1));
+        //model = glm::scale(model, glm::vec3(8.0f));
+        shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
+        shaderProgramme->setUniformsFragmentShader(numLights, lightTypes,lightsPositions, lightsIntMats,
+                                            lightsDirections, lightsCutoffAngles,material, cam->getCameraPosition(), false);
+        floorObj->drawObject(shaderProgramme, model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
         //obj2->drawObject(shaderProgramme, model2, cam->getLookAtMatrix(), cam->getProjectionMatrix());
 
         glfwSwapBuffers(window);
@@ -135,6 +190,7 @@ int main()
     }
 
     delete obj;
+    delete floorObj;
     delete cam;
     delete light1Src;
     delete light2Src;
@@ -172,4 +228,17 @@ void processInput(GLFWwindow* window, Camera* cam)
     {
         cam->moveCamera(4);
     }
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        cam->moveCamera(5);
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        cam->moveCamera(6);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        cam->moveCamera(7);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        cam->moveCamera(8);
+    }
+
 }

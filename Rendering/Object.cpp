@@ -9,6 +9,7 @@
 #include <assimp/postprocess.h>
 #include "stb_image.h"
 #include <glad/glad.h>
+Object::Object(const std::vector<Mesh>& meshes) : meshes(meshes) {}
 
 Object::Object(const std::string& pathToModel, const std::string& pathToTexture) : pathToModel(pathToModel), pathToTexture(pathToTexture){
 
@@ -92,3 +93,4 @@ void Object::drawObject(ShaderProgramme* sp, glm::mat4 modelMat, glm::mat4 viewM
     }
 
 }
+

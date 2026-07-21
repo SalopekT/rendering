@@ -143,6 +143,7 @@
     <ClCompile Include="PerspectiveCamera.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SpotLightning.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vertex3d.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="Shader.hpp" />
+    <ClInclude Include="SpotLightning.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Vertex3d.hpp" />
   </ItemGroup>

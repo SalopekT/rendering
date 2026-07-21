@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
+#include <glm/gtc/type_ptr.hpp>
 Camera::Camera(glm::vec3 position, glm::vec3 center, glm::vec3 viewUpVector) : position(position), center(center), viewUpVector(viewUpVector) {}
 
 glm::mat4 Camera::getLookAtMatrix() {
@@ -39,15 +40,37 @@ void Camera::moveCamera(int direction) {
 	}*/
 	if (direction == 1) {//left
 		this->position[0] -= 0.01f;
+		this->center[0] -= 0.01f;
 	}
 	else if (direction == 2) {
 		this->position[0] += 0.01f;
+		this->center[0] += 0.01f;
 	}
 	else if (direction == 3) {
 		this->position[1] -= 0.01f;
+		this->center[1] -= 0.01f;
 	}
-	else {
+	else if(direction == 4){
 		this->position[1] += 0.01f;
+		this->center[1] += 0.01f;
+	}
+	else if (direction == 5) {
+		this->center[2] += 0.01f;
+	}
+	else if (direction == 6) {
+		this->center[2] -= 0.01f;
+	}
+	else if (direction == 7) { 
+		glm::vec3 viewDir = this->center - this->position;
+		glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(0.1f), this->viewUpVector);
+		viewDir = glm::vec3(rot * glm::vec4(viewDir, 0.0f));
+		this->center = this->position + viewDir;
+	}
+	else if (direction == 8) {
+		glm::vec3 viewDir = this->center - this->position;
+		glm::mat4 rot = glm::rotate(glm::mat4(1.0f), glm::radians(-0.1f), this->viewUpVector);
+		viewDir = glm::vec3(rot * glm::vec4(viewDir, 0.0f));
+		this->center = this->position + viewDir;
 	}
 
 	

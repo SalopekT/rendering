@@ -72,6 +72,9 @@
     <ClCompile Include="stb_image.cpp">
       <Filter>Header Files\ImageLoadingLib</Filter>
     </ClCompile>
+    <ClCompile Include="SpotLightning.cpp">
+      <Filter>Source Files\Lightning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Face3d.hpp">
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>Header Files\ImageLoadingLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLightning.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
