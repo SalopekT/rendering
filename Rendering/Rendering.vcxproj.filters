@@ -75,6 +75,9 @@
     <ClCompile Include="SpotLightning.cpp">
       <Filter>Source Files\Lightning</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Face3d.hpp">
@@ -105,6 +108,9 @@
       <Filter>Header Files\ImageLoadingLib</Filter>
     </ClInclude>
     <ClInclude Include="SpotLightning.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

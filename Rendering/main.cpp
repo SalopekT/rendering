@@ -67,15 +67,15 @@ int main()
 
     //light settings, multiple lights
     glm::vec3 light1Position(10, 10, 10);
-    glm::vec3 light1Ambient(0.1f, 0.1f, 0.1f);  //ambient component of the first light source is main ambient component
-    glm::vec3 light1Diffuse(0.9f, 0.1f, 0.1f);
-    glm::vec3 light1Specular(0.9f, 0.1f, 0.1f);
+    glm::vec3 light1Ambient(0.2f, 0.2f, 0.2f);  //ambient component of the first light source is main ambient component
+    glm::vec3 light1Diffuse(0.1f, 0.1f, 0.1f);
+    glm::vec3 light1Specular(0.1f, 0.1f, 0.1f);
     Lightning* light1Src = new Lightning(light1Position, light1Ambient, light1Diffuse, light1Specular);
 
-    glm::vec3 light2Position(10, -10, 10);
-    glm::vec3 light2Ambient(0.1f, 0.9f, 0.1f);
-    glm::vec3 light2Diffuse(0.1f, 0.9f, 0.1f);
-    glm::vec3 light2Specular(0.1f, 0.9f, 0.1f);
+    glm::vec3 light2Position(5, -5, 10);
+    glm::vec3 light2Ambient(0.5f, 0.5f, 0.5f);
+    glm::vec3 light2Diffuse(0.9f, 0.9f, 0.9f);
+    glm::vec3 light2Specular(0.9f, 0.9f, 0.9f);
     Lightning* light2Src = new Lightning(light2Position, light2Ambient, light2Diffuse, light2Specular);
 
     glm::vec3 lightsPositions[MAX_LIGHTS] = {}; 
@@ -92,7 +92,10 @@ int main()
     lightsIntMats[1] = light2Src->getIntensitiesMatrix();
 
     lightTypes[0] = 1;
-    lightTypes[1] = 1;
+    lightTypes[1] = 2;
+
+    lightsDirections[1] = glm::vec3(-5.0, 5.0, -10.0);
+    lightsCutoffAngles[1] = 0.9597;
 
     int numLights = 2;
 
@@ -156,6 +159,24 @@ int main()
         lightsDirections, lightsCutoffAngles,material, cam->getCameraPosition(),false);
     shaderProgramme->checkLinkingSuccess();
 
+
+    //framebuffer for shadow mapping
+    unsigned int fbo;
+    glGenFramebuffers(1, &fbo);
+    //glDeleteFramebuffers(1, &fbo);
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1200, 1000, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+
+
     //render loop with double buffering
     while (!glfwWindowShouldClose(window))
     {
@@ -167,7 +188,7 @@ int main()
         //glDrawArrays(GL_TRIANGLES, 0, obj->getMesh(0).getNumOfVertices());
         //changing uniforms if needed
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0, 0.0, 5.0));
+        model = glm::translate(model, glm::vec3(0.0, 0.0, 2.0));
         //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
         model = glm::scale(model, glm::vec3(2.0f));
         shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());

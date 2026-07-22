@@ -2,13 +2,14 @@
 #define RENDERER_HPP
 
 #include<vector>
-#include "Object.hpp"
+#include "Scene.hpp"
 class Renderer {
 	private:
-		std::vector<Object> objects;
+		std::shared_ptr<Scene> scene;
 
     public:
-		void generateVBO();
+		void renderScene();
+		void renderSceneToTexture();
 
 };
 

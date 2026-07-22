@@ -41,11 +41,12 @@ void main()
         else if(lightTypes[i]==2){
             vec3 vectorFromLight = normalize(FragPos - lightPositions[i]);
             float cosineCalc = dot(normalize(lightDirection[i]), vectorFromLight);
-            float cosineOuterAngle = lightCutoffAngle[i] - 0.1; //this calculates the cosine of the outer cone
+            float cosineOuterAngle = lightCutoffAngle[i] - 0.01; //this calculates the cosine of the outer cone
             if (cosineCalc >= lightCutoffAngle[i]) totalDiffuse+=diffuseColor;
             else if(cosineCalc < lightCutoffAngle[i] && cosineCalc >= cosineOuterAngle){
-                float t = clamp((cosineCalc - cosineOuterAngle) / (lightCutoffAngle[i] - cosineOuterAngle), 0.0, 1.0);
+                float t = smoothstep(cosineOuterAngle, lightCutoffAngle[i], cosineCalc);
                 vec3 lerp = mix(vec3(0.0),diffuseColor,t);
+                totalDiffuse+=lerp;
             }   
 
         }
@@ -65,11 +66,12 @@ void main()
         else if(lightTypes[i]==2){
            vec3 vectorFromLight = normalize(FragPos - lightPositions[i]);
            float cosineCalc = dot(normalize(lightDirection[i]), vectorFromLight);
-           float cosineOuterAngle = lightCutoffAngle[i] - 0.1; //this calculates the cosine of the outer cone
+           float cosineOuterAngle = lightCutoffAngle[i] - 0.01; //this calculates the cosine of the outer cone
            if (cosineCalc >= lightCutoffAngle[i]) totalSpecular+=specularColor;
            else if(cosineCalc < lightCutoffAngle[i] && cosineCalc >= cosineOuterAngle){
-               float t = clamp((cosineCalc - cosineOuterAngle) / (lightCutoffAngle[i] - cosineOuterAngle), 0.0, 1.0);
+               float t = smoothstep(cosineOuterAngle, lightCutoffAngle[i], cosineCalc);
                vec3 lerp = mix(vec3(0.0),specularColor,t);
+               totalDiffuse+=lerp;
           }   
 
         } 

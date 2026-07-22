@@ -142,6 +142,7 @@
     <ClCompile Include="OrtographicCamera.cpp" />
     <ClCompile Include="PerspectiveCamera.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpotLightning.cpp" />
     <ClCompile Include="stb_image.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="SpotLightning.hpp" />
     <ClInclude Include="stb_image.h" />
