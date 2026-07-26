@@ -1,7 +1,7 @@
 #include "Lightning.hpp"
 
 
-Lightning::Lightning(glm::vec3 position, glm::vec3 ambientInt, glm::vec3 diffuseInt, glm::vec3 specularInt) : position(position), ambientInt(ambientInt),
+Lightning::Lightning(int type, glm::vec3 position, glm::vec3 ambientInt, glm::vec3 diffuseInt, glm::vec3 specularInt) : position(position), ambientInt(ambientInt),
 																								diffuseInt(diffuseInt), specularInt(specularInt) {}
 
 
@@ -17,4 +17,8 @@ glm::mat3 Lightning::getIntensitiesMatrix() {
 
 	return result;
 
+}
+
+int Lightning::getType() {
+	return this->type;
 }

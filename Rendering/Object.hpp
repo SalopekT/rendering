@@ -3,6 +3,7 @@
 #include <string>
 #include "Mesh.hpp"
 #include "Shader.hpp"
+#include "Transform.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 #include <assimp/scene.h>
@@ -13,6 +14,7 @@ private:
     std::string pathToTexture;
     unsigned int textureId;
     std::vector<Mesh> meshes;
+    Transform transform;
 
 public:
     Object(const std::vector<Mesh>& meshes);
@@ -24,8 +26,8 @@ public:
     float* getVerticesArray();
     Mesh& getMesh(int i);
     unsigned int generateTexture();
-
-    void drawObject(ShaderProgramme* sp, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projectionMat);
+    Transform getTransform();
+    void drawObject();
    
 private:
     void processNode(aiNode* node, const aiScene* scene);

@@ -114,9 +114,9 @@ unsigned int Mesh::createBuffer() {
     return VAO;
 }
 
-void Mesh::drawMesh(ShaderProgramme* sp, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projectionMat) {
+void Mesh::drawMesh() {
     glBindVertexArray(this->VAO);
-    sp->setUniformsVertexShader(modelMat, viewMat, projectionMat);
+    //sp.setUniformsVertexShader(modelMat, viewMat, projectionMat);
     //glDrawArrays(GL_TRIANGLES, 0, this->getNumOfVertices());
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }

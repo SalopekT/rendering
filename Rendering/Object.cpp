@@ -86,10 +86,14 @@ unsigned int Object::generateTexture() {
     return 0;
 }
 
-void Object::drawObject(ShaderProgramme* sp, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projectionMat) {
+Transform Object::getTransform() {
+    return this->transform;
+}
+
+void Object::drawObject() {
     for (Mesh& mesh : this->meshes) {
         if (this->textureId != 0) glBindTexture(GL_TEXTURE_2D, this->textureId);
-        mesh.drawMesh(sp, modelMat, viewMat, projectionMat);
+        mesh.drawMesh();
     }
 
 }

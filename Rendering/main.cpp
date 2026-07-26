@@ -70,13 +70,13 @@ int main()
     glm::vec3 light1Ambient(0.2f, 0.2f, 0.2f);  //ambient component of the first light source is main ambient component
     glm::vec3 light1Diffuse(0.1f, 0.1f, 0.1f);
     glm::vec3 light1Specular(0.1f, 0.1f, 0.1f);
-    Lightning* light1Src = new Lightning(light1Position, light1Ambient, light1Diffuse, light1Specular);
+    Lightning* light1Src = new Lightning(1,light1Position, light1Ambient, light1Diffuse, light1Specular);
 
     glm::vec3 light2Position(5, -5, 10);
     glm::vec3 light2Ambient(0.5f, 0.5f, 0.5f);
     glm::vec3 light2Diffuse(0.9f, 0.9f, 0.9f);
     glm::vec3 light2Specular(0.9f, 0.9f, 0.9f);
-    Lightning* light2Src = new Lightning(light2Position, light2Ambient, light2Diffuse, light2Specular);
+    Lightning* light2Src = new Lightning(2,light2Position, light2Ambient, light2Diffuse, light2Specular);
 
     glm::vec3 lightsPositions[MAX_LIGHTS] = {}; 
     glm::mat3 lightsIntMats[MAX_LIGHTS] = {};
@@ -149,10 +149,10 @@ int main()
 
 
     ShaderProgramme* shaderProgramme = new ShaderProgramme(vertexShader, fragmentShader);
-    glm::mat4 model = glm::mat4(1.0f);
+    /*glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0, 0.0, 5.0));
     model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0, 1));
-    model = glm::scale(model, glm::vec3(8.0f));
+    model = glm::scale(model, glm::vec3(8.0f));*/
     shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
     glm::vec3 material(0.8f, 0.8f, 0.8f);
     shaderProgramme->setUniformsFragmentShader(2, lightTypes,lightsPositions, lightsIntMats,
@@ -187,23 +187,25 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //glDrawArrays(GL_TRIANGLES, 0, obj->getMesh(0).getNumOfVertices());
         //changing uniforms if needed
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0, 0.0, 2.0));
+        //glm::mat4 model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(0.0, 0.0, 2.0));
         //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-        model = glm::scale(model, glm::vec3(2.0f));
+        //model = glm::scale(model, glm::vec3(2.0f));
         shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
         shaderProgramme->setUniformsFragmentShader(numLights, lightTypes,lightsPositions, lightsIntMats,
                                             lightsDirections, lightsCutoffAngles,material, cam->getCameraPosition(), true);
-        obj->drawObject(shaderProgramme,model,cam->getLookAtMatrix(),cam->getProjectionMatrix());
+        obj->drawObject(*shaderProgramme,cam->getLookAtMatrix(),cam->getProjectionMatrix());
+
+
         //changing uniforms if needed
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0, 0.0, 0.0));
+        /*model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0, 0.0, 0.0));*/
         //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0, 1));
         //model = glm::scale(model, glm::vec3(8.0f));
         shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
         shaderProgramme->setUniformsFragmentShader(numLights, lightTypes,lightsPositions, lightsIntMats,
                                             lightsDirections, lightsCutoffAngles,material, cam->getCameraPosition(), false);
-        floorObj->drawObject(shaderProgramme, model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
+        floorObj->drawObject(*shaderProgramme, cam->getLookAtMatrix(), cam->getProjectionMatrix());
         //obj2->drawObject(shaderProgramme, model2, cam->getLookAtMatrix(), cam->getProjectionMatrix());
 
         glfwSwapBuffers(window);

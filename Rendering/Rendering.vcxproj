@@ -160,6 +160,7 @@
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="SpotLightning.hpp" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Transform.hpp" />
     <ClInclude Include="Vertex3d.hpp" />
   </ItemGroup>
   <ItemGroup>

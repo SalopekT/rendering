@@ -25,7 +25,7 @@ class Mesh{
         int getNumOfVertices();
 
         unsigned int createBuffer(); //generates VBO and VAO, returns id of VAO
-        void drawMesh(ShaderProgramme* sp, glm::mat4 modelMat, glm::mat4 viewMat, glm::mat4 projectionMat);
+        void drawMesh();
 
         void print() const;
         
