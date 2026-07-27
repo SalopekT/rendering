@@ -9,7 +9,11 @@
 #include <assimp/postprocess.h>
 #include "stb_image.h"
 #include <glad/glad.h>
-Object::Object(const std::vector<Mesh>& meshes) : meshes(meshes) {}
+Object::Object(const std::vector<Mesh>& meshes) : meshes(meshes) {
+    for (Mesh mesh : meshes) {
+        mesh.createBuffer();
+    }
+}
 
 Object::Object(const std::string& pathToModel, const std::string& pathToTexture) : pathToModel(pathToModel), pathToTexture(pathToTexture){
 
@@ -32,7 +36,9 @@ void Object::processNode(aiNode* node, const aiScene* scene) {
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(Mesh::processMesh(mesh, scene));
+        Mesh myMesh = Mesh::processMesh(mesh, scene);
+        myMesh.createBuffer();
+        meshes.push_back(myMesh);
     }
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
@@ -89,7 +95,12 @@ unsigned int Object::generateTexture() {
 Transform Object::getTransform() {
     return this->transform;
 }
-
+glm::vec3 Object::getMaterialCoeffs() {
+    return this->materialCoeffs;
+}
+bool Object::hasTexture() {
+    return this->hasTextureFlag;
+}
 void Object::drawObject() {
     for (Mesh& mesh : this->meshes) {
         if (this->textureId != 0) glBindTexture(GL_TEXTURE_2D, this->textureId);

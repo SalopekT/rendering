@@ -16,6 +16,9 @@ class Lightning {
 		//glm::vec3 getIntensityInPoint(glm::vec3 pointPosition, glm::vec3 pointNormal, glm::vec3 kAmb, glm::vec3 kDif, glm::vec3 kSpec);
 		glm::vec3 getLightPosition();
 		glm::mat3 getIntensitiesMatrix();
+		int getType();
+		glm::vec3 getDirection();
+		float getCutoffAngle();
 };
 
 

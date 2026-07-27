@@ -22,3 +22,11 @@ glm::mat3 Lightning::getIntensitiesMatrix() {
 int Lightning::getType() {
 	return this->type;
 }
+
+//these two are only for spotlights (for now) but here is default implementation
+glm::vec3 Lightning::getDirection() {
+	return glm::vec3(0.0f);
+}
+float Lightning::getCutoffAngle() {
+	return 0.0;
+}

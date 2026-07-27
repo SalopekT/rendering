@@ -15,6 +15,8 @@ private:
     unsigned int textureId;
     std::vector<Mesh> meshes;
     Transform transform;
+    glm::vec3 materialCoeffs;
+    bool hasTextureFlag;
 
 public:
     Object(const std::vector<Mesh>& meshes);
@@ -27,6 +29,8 @@ public:
     Mesh& getMesh(int i);
     unsigned int generateTexture();
     Transform getTransform();
+    glm::vec3 getMaterialCoeffs();
+    bool hasTexture();
     void drawObject();
    
 private:

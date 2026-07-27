@@ -111,11 +111,28 @@ unsigned int Mesh::createBuffer() {
     glEnableVertexAttribArray(2);
 
     this->VAO = VAO;
+    this->VBO = VBO;
+    this->EBO = EBO;
+
+    glBindVertexArray(0);
+
     return VAO;
+}
+
+
+unsigned int Mesh::getVAO() {
+    return this->VAO;
+}
+unsigned int Mesh::getVBO() {
+    return this->VBO;
+}
+unsigned int Mesh::getEBO() {
+    return this->EBO;
 }
 
 void Mesh::drawMesh() {
     glBindVertexArray(this->VAO);
+    //its not neccessary to rebind vbo and ebo explicitly
     //sp.setUniformsVertexShader(modelMat, viewMat, projectionMat);
     //glDrawArrays(GL_TRIANGLES, 0, this->getNumOfVertices());
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

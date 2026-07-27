@@ -9,6 +9,7 @@
 #include <string>
 #include "Object.hpp"
 #include "Camera.hpp"
+#include "Scene.hpp"
 #include "Shader.hpp"
 #include "Lightning.hpp"
 #include <glm/gtc/type_ptr.hpp>
@@ -121,8 +122,8 @@ int main()
 
     Mesh floor(vertices, faces, indices);
     Object* floorObj = new Object(std::vector<Mesh>{floor});
-    unsigned int VAOidFloor = floorObj->getMesh(0).createBuffer(); //VAO already knows about its VBO
-    floorObj->generateTexture();
+    //unsigned int VAOidFloor = floorObj->getMesh(0).createBuffer(); //VAO already knows about its VBO
+    //floorObj->generateTexture();
 
 
     //object creation
@@ -132,12 +133,15 @@ int main()
 
     //Object* obj2 = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\boombox_4k.fbx", "C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\textures\\boombox_diff_4k.jpg");
 
-    unsigned int VAOid = obj->getMesh(0).createBuffer(); //VAO already knows about its VBO
-    obj->generateTexture();
+    //unsigned int VAOid = obj->getMesh(0).createBuffer(); //VAO already knows about its VBO
+    //obj->generateTexture();
     
     /*unsigned int VAOid2 = obj2->getMesh(0).createBuffer();
     obj2->generateTexture();*/
 
+    //scene creation
+    Scene* scene = new Scene();
+    scene->addObject(obj);
 
     Shader* vertexShader = new VertexShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\vertexShader1.vert");
     vertexShader->createShader();

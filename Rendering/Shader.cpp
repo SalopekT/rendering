@@ -81,7 +81,7 @@ void ShaderProgramme::setUniformsVertexShader(glm::mat4 modelMatrix, glm::mat4 v
 }
 
 void ShaderProgramme::setUniformsFragmentShader(int numLights, int* lightTypes, glm::vec3* lightPosition, glm::mat3* lightIntensities,
-                                                glm::vec3* lightDirections, float* lightCutoffAngles, glm::vec3 materialLightCoefs,glm::vec3 eyePosition, bool hasTexture) {
+                                                glm::vec3* lightDirections, float* lightCutoffAngles,glm::vec3 eyePosition) {
     //setting uniforms
     int numLightsLoc = glGetUniformLocation(this->id, "numLights");
     int typeLights = glGetUniformLocation(this->id, "lightTypes");
@@ -91,7 +91,6 @@ void ShaderProgramme::setUniformsFragmentShader(int numLights, int* lightTypes, 
     int lightDirLoc = glGetUniformLocation(this->id, "lightDirection");
     int lightCutoffsLoc = glGetUniformLocation(this->id, "lightCutoffAngle");
     int eyePosLoc = glGetUniformLocation(this->id, "eyePosition");
-    int textureLoc = glGetUniformLocation(this->id, "texture1");
 
     glUniform1i(numLightsLoc, numLights);
     glUniform1iv(typeLights, numLights, lightTypes);
@@ -99,9 +98,17 @@ void ShaderProgramme::setUniformsFragmentShader(int numLights, int* lightTypes, 
     glUniformMatrix3fv(lightIntensitiesLoc, numLights, GL_FALSE, glm::value_ptr(lightIntensities[0]));
     glUniform3fv(lightDirLoc, numLights, glm::value_ptr(lightDirections[0]));
     glUniform1fv(lightCutoffsLoc, numLights, lightCutoffAngles);
-    glUniform3f(materialLightCoefsLoc, materialLightCoefs.x, materialLightCoefs.y, materialLightCoefs.z);
     glUniform3f(eyePosLoc, eyePosition.x, eyePosition.y, eyePosition.z);
 
+    
+
+}
+//this is also for passing uniforms but uniforms related to objects in scene i.e. this i will have to change more often
+void ShaderProgramme::setObjectUniformsFragmentShader(glm::vec3 materialLightCoefs, bool hasTexture) {
+    int materialLightCoefsLoc = glGetUniformLocation(this->id, "materialLightCoefs");
+    int textureLoc = glGetUniformLocation(this->id, "texture1");
+
+    glUniform3f(materialLightCoefsLoc, materialLightCoefs.x, materialLightCoefs.y, materialLightCoefs.z);
     if (hasTexture) {
         glUniform1i(textureLoc, 0);
         glUniform1i(glGetUniformLocation(this->id, "hasTexture"), 1);
@@ -109,9 +116,7 @@ void ShaderProgramme::setUniformsFragmentShader(int numLights, int* lightTypes, 
     else {
         glUniform1i(glGetUniformLocation(this->id, "hasTexture"), 0);
     }
-
 }
-
 void ShaderProgramme::checkLinkingSuccess() {
     int success;
     char infoLog[512];

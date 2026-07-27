@@ -15,6 +15,8 @@ class Mesh{
         std::vector<unsigned int> indices;
 
         unsigned int VAO;
+        unsigned int VBO;
+        unsigned int EBO;
 
     public:
         Mesh(std::vector<std::shared_ptr<Vertex3d>> vertices, std::vector<Face3d> faces, std::vector<unsigned int> indices);
@@ -28,6 +30,9 @@ class Mesh{
         void drawMesh();
 
         void print() const;
+        unsigned int getVAO();
+        unsigned int getVBO();
+        unsigned int getEBO();
         
 };
 
