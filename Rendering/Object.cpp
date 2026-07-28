@@ -9,13 +9,13 @@
 #include <assimp/postprocess.h>
 #include "stb_image.h"
 #include <glad/glad.h>
-Object::Object(const std::vector<Mesh>& meshes) : meshes(meshes) {
-    for (Mesh mesh : meshes) {
+Object::Object(const std::vector<Mesh>& meshes) : meshes(meshes), textureId(0){
+    for (Mesh& mesh : this->meshes) {
         mesh.createBuffer();
     }
 }
 
-Object::Object(const std::string& pathToModel, const std::string& pathToTexture) : pathToModel(pathToModel), pathToTexture(pathToTexture){
+Object::Object(const std::string& pathToModel, const std::string& pathToTexture) : textureId(0),pathToModel(pathToModel), pathToTexture(pathToTexture){
 
     // https://learnopengl.com/Model-Loading/Model
     Assimp::Importer importer;
@@ -91,7 +91,14 @@ unsigned int Object::generateTexture() {
     }
     return 0;
 }
+void Object::setTransform() {
 
+}
+void Object::setMaterialCoeffs(glm::vec3 materialCoeffs) {
+    this->materialCoeffs = materialCoeffs;
+}
+
+void setMaterialCoeffs();
 Transform Object::getTransform() {
     return this->transform;
 }

@@ -32,6 +32,8 @@ public:
     glm::vec3 getMaterialCoeffs();
     bool hasTexture();
     void drawObject();
+    void setTransform();
+    void setMaterialCoeffs(glm::vec3 materialCoeffs);
    
 private:
     void processNode(aiNode* node, const aiScene* scene);

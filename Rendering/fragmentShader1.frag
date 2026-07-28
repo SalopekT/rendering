@@ -82,5 +82,6 @@ void main()
 
     if (hasTexture) FragColor = vec4(baseColor*color, 1.0f);
     else  FragColor = vec4(color, 1.0f);
+    //FragColor = vec4(1,0,0,1);
 
 } 

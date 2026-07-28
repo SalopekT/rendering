@@ -50,6 +50,7 @@ class ShaderProgramme {
 										 glm::vec3* lightDirections, float* lightCutoffAngles,glm::vec3 eyePosition);
 		void setObjectUniformsFragmentShader(glm::vec3 materialLightCoefs, bool hasTexture);
 		void checkLinkingSuccess();
+		~ShaderProgramme();
 
 
 

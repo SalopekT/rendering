@@ -9,6 +9,7 @@ class Renderer {
 		std::shared_ptr<ShaderProgramme> shaderProgramme;
 
     public:
+		Renderer(std::shared_ptr<Scene> scene, std::shared_ptr<ShaderProgramme> shaderProgramme);
 		void renderScene();
 		void renderSceneToTexture(glm::mat4 viewMat, glm::mat4 projectionMat);
 

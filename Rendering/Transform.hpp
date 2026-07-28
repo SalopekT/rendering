@@ -8,6 +8,7 @@ private:
 	glm::vec3 scale{1.0f};
 
 public:
+	Transform();
 	glm::mat4 getModelMatrix();
 };
 

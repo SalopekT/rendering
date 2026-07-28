@@ -1,5 +1,11 @@
 #include "Transform.hpp"
 #include <glm/gtc/quaternion.hpp>
+Transform::Transform()
+	: position(0.0f),
+	rotationEuler(0.0f),
+	scale(1.0f)
+{
+}
 glm::mat4 Transform::getModelMatrix() {
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), this->position);
 	glm::quat q = glm::quat(glm::vec3(glm::radians(rotationEuler[0]),

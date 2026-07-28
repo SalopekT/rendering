@@ -7,6 +7,7 @@
 #include <string>
 #include <iostream>
 
+#define CHECK_GL(label) { GLenum e; while((e = glGetError()) != GL_NO_ERROR) std::cout << "GL error " << e << " at " << label << std::endl; }
 
 Shader::Shader(std::string pathName) : pathName(pathName), id(0) {}
 Shader::~Shader() {
@@ -72,10 +73,14 @@ void ShaderProgramme::setUniformsVertexShader(glm::mat4 modelMatrix, glm::mat4 v
     int viewMat = glGetUniformLocation(this->id, "view");
     int projectionMat = glGetUniformLocation(this->id, "projection");
     int modelMat = glGetUniformLocation(this->id, "model");
+    //CHECK_GL("get uniform locations - vertex");
 
     glUniformMatrix4fv(viewMat, 1, GL_FALSE, glm::value_ptr(viewMatrix));
+    //CHECK_GL("set view");
     glUniformMatrix4fv(projectionMat, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    //CHECK_GL("set projection");
     glUniformMatrix4fv(modelMat, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+    //CHECK_GL("set model");
 
 
 }
@@ -125,4 +130,16 @@ void ShaderProgramme::checkLinkingSuccess() {
         glGetProgramInfoLog(this->id, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::LINKING FAILED\n" << infoLog << std::endl;
     }
+}
+
+ShaderProgramme::~ShaderProgramme() {
+    glDeleteProgram(id);
+
+    delete vs;
+    delete fs;
+
+    for (Shader* shader : otherShaders) {
+        delete shader;
+    }
+    otherShaders.clear();
 }
