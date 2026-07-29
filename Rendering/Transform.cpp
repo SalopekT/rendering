@@ -13,7 +13,14 @@ glm::mat4 Transform::getModelMatrix() {
 		glm::radians(rotationEuler[2])));
 	glm::mat4 rotation = glm::mat4_cast(q);
 	//this rotation is rotation in object's own coordinate space
-	glm::mat4 scale = glm::scale(glm::mat4(1.0f), this->scale);
-	glm::mat4 model = translation * rotation * scale;
+	glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), this->scale);
+	glm::mat4 model = translation * rotation * scaleMat;
 	return model;
+}
+
+void Transform::setScale(glm::vec3 scale) {
+	this->scale = scale;
+}
+void Transform::setPosition(glm::vec3 pos) {
+	this->position = pos;
 }

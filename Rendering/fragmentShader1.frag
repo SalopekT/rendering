@@ -71,7 +71,7 @@ void main()
            else if(cosineCalc < lightCutoffAngle[i] && cosineCalc >= cosineOuterAngle){
                float t = smoothstep(cosineOuterAngle, lightCutoffAngle[i], cosineCalc);
                vec3 lerp = mix(vec3(0.0),specularColor,t);
-               totalDiffuse+=lerp;
+               totalSpecular+=lerp;
           }   
 
         } 
@@ -82,6 +82,5 @@ void main()
 
     if (hasTexture) FragColor = vec4(baseColor*color, 1.0f);
     else  FragColor = vec4(color, 1.0f);
-    //FragColor = vec4(1,0,0,1);
 
 } 

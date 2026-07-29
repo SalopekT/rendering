@@ -17,8 +17,8 @@ class Lightning {
 		glm::vec3 getLightPosition();
 		glm::mat3 getIntensitiesMatrix();
 		int getType();
-		glm::vec3 getDirection();
-		float getCutoffAngle();
+		virtual glm::vec3 getDirection();
+		virtual float getCutoffAngle();
 };
 
 

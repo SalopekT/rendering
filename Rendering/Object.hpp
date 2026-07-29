@@ -28,12 +28,14 @@ public:
     float* getVerticesArray();
     Mesh& getMesh(int i);
     unsigned int generateTexture();
-    Transform getTransform();
+    Transform& getTransform();
     glm::vec3 getMaterialCoeffs();
     bool hasTexture();
-    void drawObject();
+    void setTextureFlag(bool t);
     void setTransform();
     void setMaterialCoeffs(glm::vec3 materialCoeffs);
+
+    void drawObject();
    
 private:
     void processNode(aiNode* node, const aiScene* scene);

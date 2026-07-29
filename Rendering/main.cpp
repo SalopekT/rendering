@@ -17,8 +17,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "stb_image.h"
 
-#define CHECK_GL(label) { GLenum e; while((e = glGetError()) != GL_NO_ERROR) std::cout << "GL error " << e << " at " << label << std::endl; }
-
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, std::shared_ptr<Camera> cam);
 
@@ -60,7 +58,6 @@ int main()
 
     //depth test enabling
     glEnable(GL_DEPTH_TEST);
-    CHECK_GL("after glad init");
     //camera settings
     glm::vec3 camPosition(-10, -10, 5);
     glm::vec3 camCenter(0, 0, 0);
@@ -77,7 +74,7 @@ int main()
     glm::vec3 light2Ambient(0.5f, 0.5f, 0.5f);
     glm::vec3 light2Diffuse(0.9f, 0.9f, 0.9f);
     glm::vec3 light2Specular(0.9f, 0.9f, 0.9f);
-    Lightning* light2Src = new Lightning(2,light2Position, light2Ambient, light2Diffuse, light2Specular);
+    //Lightning* light2Src = new Lightning(2,light2Position, light2Ambient, light2Diffuse, light2Specular);
     std::shared_ptr<Lightning> light2src = std::make_shared<SpotLightning>(light2Position, light2Ambient, light2Diffuse, light2Specular,
                                                                             glm::vec3(-5.0, 5.0, -10.0), 0.9597);
 
@@ -106,23 +103,23 @@ int main()
     floor.createBuffer();
     std::shared_ptr<Object> floorObj = std::make_shared<Object>(std::vector<Mesh>{floor});
     floorObj->setMaterialCoeffs(glm::vec3{ 0.8f, 0.8f, 0.8f });
-    CHECK_GL("after floor buffer creation");
-    //unsigned int VAOidFloor = floorObj->getMesh(0).createBuffer(); //VAO already knows about its VBO
-    //floorObj->generateTexture();
+    floorObj->setTextureFlag(false);
 
 
     //object creation
     //Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\donny.fbx","C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\donny.png");
     std::shared_ptr<Object> obj = std::make_shared<Object>("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\donny.fbx", "C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\donny.png");
     obj->setMaterialCoeffs(glm::vec3{ 0.8f, 0.8f, 0.8f });
-    CHECK_GL("after obj construction");
+    obj->setTextureFlag(true);
+    obj->getTransform().setScale(glm::vec3{ 3.0f, 3.0f, 3.0f });
+    obj->getTransform().setPosition(glm::vec3{ 0.0f, 0.0f, 3.0f });
     //Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\dragon.obj", "");
     //obj->print();
 
     //Object* obj2 = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\boombox_4k.fbx", "C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\boombox_4k.fbx\\textures\\boombox_diff_4k.jpg");
 
     //unsigned int VAOid = obj->getMesh(0).createBuffer(); //VAO already knows about its VBO
-    //obj->generateTexture();
+    obj->generateTexture();
     
     /*unsigned int VAOid2 = obj2->getMesh(0).createBuffer();
     obj2->generateTexture();*/
@@ -138,41 +135,37 @@ int main()
     Shader* vertexShader = new VertexShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\vertexShader1.vert");
     vertexShader->createShader();
     vertexShader->compileShader();
-    CHECK_GL("after vertex shader compile");
     Shader* fragmentShader = new FragmentShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\fragmentShader1.frag");
     fragmentShader->createShader();
     fragmentShader->compileShader();
-    CHECK_GL("after fragment shader compile");
     std::shared_ptr<ShaderProgramme> shaderProgramme = std::make_shared<ShaderProgramme>(vertexShader, fragmentShader);
-    CHECK_GL("after programme link");
-    /*glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0, 0.0, 5.0));
-    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0, 1));
-    model = glm::scale(model, glm::vec3(8.0f));*/
-    /*shaderProgramme->setUniformsVertexShader(model, cam->getLookAtMatrix(), cam->getProjectionMatrix());
-    glm::vec3 material(0.8f, 0.8f, 0.8f);
-    shaderProgramme->setUniformsFragmentShader(2, lightTypes,lightsPositions, lightsIntMats,
-        lightsDirections, lightsCutoffAngles,material, cam->getCameraPosition(),false);*/
+   
     shaderProgramme->checkLinkingSuccess();
 
 
     Renderer* renderer = new Renderer(scene, shaderProgramme);
 
     //framebuffer for shadow mapping
-    /*unsigned int fbo;
-    glGenFramebuffers(1, &fbo);
-    //glDeleteFramebuffers(1, &fbo);
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1200, 1000, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    unsigned int depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+        SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);*/
-
-
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
     //render loop with double buffering
@@ -183,25 +176,8 @@ int main()
         //rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //glDrawArrays(GL_TRIANGLES, 0, obj->getMesh(0).getNumOfVertices());
-        //changing uniforms if needed
-        //glm::mat4 model = glm::mat4(1.0f);
-        //model = glm::translate(model, glm::vec3(0.0, 0.0, 2.0));
-        //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-        //model = glm::scale(model, glm::vec3(2.0f));
         
         renderer->renderScene();
-        CHECK_GL("after render")
-        GLenum err;
-        /*while ((err = glGetError()) != GL_NO_ERROR)
-            std::cout << "GL error: " << err << std::endl;*/
-        //changing uniforms if needed
-        /*model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0, 0.0, 0.0));*/
-        //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 0, 1));
-        //model = glm::scale(model, glm::vec3(8.0f));
-        
-        //obj2->drawObject(shaderProgramme, model2, cam->getLookAtMatrix(), cam->getProjectionMatrix());
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -98,12 +98,15 @@ void Object::setMaterialCoeffs(glm::vec3 materialCoeffs) {
     this->materialCoeffs = materialCoeffs;
 }
 
-void setMaterialCoeffs();
-Transform Object::getTransform() {
+
+Transform& Object::getTransform() {
     return this->transform;
 }
 glm::vec3 Object::getMaterialCoeffs() {
     return this->materialCoeffs;
+}
+void Object::setTextureFlag(bool t) {
+    this->hasTextureFlag = t;
 }
 bool Object::hasTexture() {
     return this->hasTextureFlag;
