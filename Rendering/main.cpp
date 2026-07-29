@@ -175,8 +175,18 @@ int main()
         
         //rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
+        //first pass of rendering is used to get data from depth framebuffer to the texture
+        /*glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        renderer->renderSceneToTexture();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
+
+        //here goes the standard render pass
+        glViewport(0, 0, 1200, 1000);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
         renderer->renderScene();
 
         glfwSwapBuffers(window);

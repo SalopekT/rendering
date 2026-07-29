@@ -30,6 +30,8 @@ void Renderer::renderScene() {
 	}
 
 }
-void Renderer::renderSceneToTexture(glm::mat4 viewMat, glm::mat4 projectionMat) {
+void Renderer::renderSceneToTexture() {
+	//for now i will enable shadow mapping with only 1 spotlight
+	std::shared_ptr<Lightning> firstLight = this->scene->getLights().at(0);
 
 }
