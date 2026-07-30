@@ -134,6 +134,11 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Face3d.cpp" />
+    <None Include="emptyFragmentShader.frag" />
+    <None Include="emptyVertexShader.vert" />
+    <None Include="fragmentShaderShadow.frag">
+      <FileType>Document</FileType>
+    </None>
     <ClCompile Include="glad.c" />
     <ClCompile Include="Lightning.cpp" />
     <ClCompile Include="main.cpp" />
@@ -148,6 +153,9 @@
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Vertex3d.cpp" />
+    <None Include="vertexShaderShadow.vert">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.hpp" />

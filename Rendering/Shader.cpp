@@ -65,7 +65,7 @@ ShaderProgramme::ShaderProgramme(Shader* vs, Shader* fs) : vs(vs), fs(fs) {
     glAttachShader(this->id, fs->getId());
     glLinkProgram(this->id);
 
-    glUseProgram(this->id);
+    //glUseProgram(this->id);
 }
 
 void ShaderProgramme::setUniformsVertexShader(glm::mat4 modelMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix) {
@@ -122,6 +122,19 @@ void ShaderProgramme::setObjectUniformsFragmentShader(glm::vec3 materialLightCoe
         glUniform1i(glGetUniformLocation(this->id, "hasTexture"), 0);
     }
 }
+
+void ShaderProgramme::setUniformsShadowShader(glm::mat4 lightTransformationMatrix, glm::mat4 modelMatrix) {
+    int lightTransformationLoc = glGetUniformLocation(this->id, "lightSpaceMatrix");
+    int modelLoc = glGetUniformLocation(this->id, "model");
+    glUniformMatrix4fv(lightTransformationLoc, 1, GL_FALSE, glm::value_ptr(lightTransformationMatrix));
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
+}
+
+void ShaderProgramme::useProgramme() {
+    glUseProgram(this->id);
+}
+
 void ShaderProgramme::checkLinkingSuccess() {
     int success;
     char infoLog[512];

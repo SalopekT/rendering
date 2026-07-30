@@ -141,6 +141,17 @@ int main()
     std::shared_ptr<ShaderProgramme> shaderProgramme = std::make_shared<ShaderProgramme>(vertexShader, fragmentShader);
    
     shaderProgramme->checkLinkingSuccess();
+    //shaderProgramme->useProgramme();
+
+    Shader* vertexShaderShadows = new VertexShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\vertexShaderShadow.vert");
+    vertexShaderShadows->createShader();
+    vertexShaderShadows->compileShader();
+    Shader* fragmentShaderShadows = new FragmentShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\fragmentShaderShadow.frag");
+    fragmentShaderShadows->createShader();
+    fragmentShaderShadows->compileShader();
+    std::shared_ptr<ShaderProgramme> shaderProgrammeShadows = std::make_shared<ShaderProgramme>(vertexShaderShadows, fragmentShaderShadows);
+
+    shaderProgrammeShadows->checkLinkingSuccess();
 
 
     Renderer* renderer = new Renderer(scene, shaderProgramme);
@@ -167,6 +178,41 @@ int main()
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    float quadVertices[] = {
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f
+    };
+
+    // Set up VAO/VBO for the screen quad...
+    unsigned int quadVBO;
+    glGenBuffers(1, &quadVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+
+    unsigned int quadVAO;
+    glGenVertexArrays(1, &quadVAO);
+    glBindVertexArray(quadVAO);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBufferData(GL_ARRAY_BUFFER, 24*sizeof(float), quadVertices, GL_STATIC_DRAW);
+
+    Shader* vertexShaderTexture = new VertexShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\emptyVertexShader.vert");
+    vertexShaderTexture->createShader();
+    vertexShaderTexture->compileShader();
+    Shader* fragmentShaderTexture = new FragmentShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\emptyFragmentShader.frag");
+    fragmentShaderTexture->createShader();
+    fragmentShaderTexture->compileShader();
+    std::shared_ptr<ShaderProgramme> shaderProgrammeTexture = std::make_shared<ShaderProgramme>(vertexShaderTexture, fragmentShaderTexture);
+    shaderProgrammeTexture->useProgramme();
 
     //render loop with double buffering
     while (!glfwWindowShouldClose(window))
@@ -177,17 +223,21 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         
         //first pass of rendering is used to get data from depth framebuffer to the texture
-        /*glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
+        shaderProgrammeShadows->useProgramme();
         renderer->renderSceneToTexture();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         //here goes the standard render pass
-        glViewport(0, 0, 1200, 1000);
+        /*glViewport(0, 0, 1200, 1000);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glBindTexture(GL_TEXTURE_2D, depthMap);
-        renderer->renderScene();
+        //glBindTexture(GL_TEXTURE_2D, depthMap);
+        shaderProgramme->useProgramme();
+        renderer->renderScene();*/
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -49,7 +49,9 @@ class ShaderProgramme {
 		void setUniformsFragmentShader(int numLights, int* typeLights, glm::vec3* lightPosition, glm::mat3* lightIntensities, 
 										 glm::vec3* lightDirections, float* lightCutoffAngles,glm::vec3 eyePosition);
 		void setObjectUniformsFragmentShader(glm::vec3 materialLightCoefs, bool hasTexture);
+		void setUniformsShadowShader(glm::mat4 lightTransformationMatrix, glm::mat4 modelMatrix);
 		void checkLinkingSuccess();
+		void useProgramme();
 		~ShaderProgramme();
 
 
