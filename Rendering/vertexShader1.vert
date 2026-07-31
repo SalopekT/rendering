@@ -6,10 +6,12 @@ layout (location = 2) in vec2 aTexCoord;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightSpaceMatrix;
 
 out vec3 Normal; //normals are needed in fragment shader because of lightning calculations
 out vec3 FragPos; //Frag position is position in world coordinates (view and projection transformations not applied)
 out vec2 TexCoord;
+out vec3 FragPositionLightSpace;
 
 void main()
 {

@@ -2,7 +2,8 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-Renderer::Renderer(std::shared_ptr<Scene> scene, std::shared_ptr<ShaderProgramme> shaderProgramme) : scene(scene), shaderProgramme(shaderProgramme) {}
+Renderer::Renderer(std::shared_ptr<Scene> scene, std::shared_ptr<ShaderProgramme> shaderProgramme, std::shared_ptr<ShaderProgramme> shaderProgrammeShadow)
+											: scene(scene), shaderProgramme(shaderProgramme), shaderProgrammeShadow(shaderProgrammeShadow) {}
 
 void Renderer::renderScene() {
 	std::vector<std::shared_ptr<Lightning>> lightsInScene = this->scene->getLights();
@@ -35,17 +36,22 @@ void Renderer::renderSceneToTexture() {
 	//for now i will enable shadow mapping with only 1 spotlight
 	std::shared_ptr<Lightning> firstLight = this->scene->getLights().at(0);
 	float innerConeAngleCosine = firstLight->getCutoffAngle();
-	float fov = 2 * innerConeAngleCosine;
+	float fov = 2 * glm::degrees(glm::acos(innerConeAngleCosine));
 	float aspectRatio = 1.0f;
 	float zNear = 0.01f;
-	float zFar = 100.0f;
-	glm::mat4 lightProjectionMat = glm::perspective(glm::radians(fov), aspectRatio, zNear, zFar);
+	float zFar = 150.0f;
+	//glm::mat4 lightProjectionMat = glm::perspective(glm::radians(fov), aspectRatio, zNear, zFar);
+	//glm::mat4 lightProjectionMat = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, 0.1f, 150.0f);
+	float near_plane = 1.0f, far_plane = 20.0f;
+	glm::mat4 lightProjectionMat = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 	glm::mat4 lightViewMat = glm::lookAt(firstLight->getLightPosition(),
 		firstLight->getLightPosition() + firstLight->getDirection(), glm::vec3{ 0.0f,0.0f,1.0f });
 
 	glm::mat4 lightSpaceMatrix = lightProjectionMat * lightViewMat;
 	for (int i = 0;i < this->scene->getObjects().size();i++) {
-		this->shaderProgramme->setUniformsShadowShader(lightSpaceMatrix, this->scene->getObjects().at(i)->getTransform().getModelMatrix());
+		//std::cout << "Drawing object " << i << std::endl;
+		this->shaderProgrammeShadow->setUniformsShadowShader(lightSpaceMatrix, this->scene->getObjects().at(i)->getTransform().getModelMatrix());
+		this->scene->getObjects().at(i)->drawObject();
 	}
 
 

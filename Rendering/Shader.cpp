@@ -144,6 +144,9 @@ void ShaderProgramme::checkLinkingSuccess() {
         std::cout << "ERROR::SHADER::LINKING FAILED\n" << infoLog << std::endl;
     }
 }
+unsigned int ShaderProgramme::getId() {
+    return this->id;
+}
 
 ShaderProgramme::~ShaderProgramme() {
     glDeleteProgram(id);

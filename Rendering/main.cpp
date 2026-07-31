@@ -55,7 +55,6 @@ int main()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-
     //depth test enabling
     glEnable(GL_DEPTH_TEST);
     //camera settings
@@ -128,7 +127,7 @@ int main()
     std::shared_ptr<Scene> scene= std::make_shared<Scene>();
     scene->addObject(obj);
     scene->addObject(floorObj);
-    scene->addLight(light1src);
+    //scene->addLight(light1src);
     scene->addLight(light2src);
     scene->setCamera(cam);
 
@@ -154,7 +153,7 @@ int main()
     shaderProgrammeShadows->checkLinkingSuccess();
 
 
-    Renderer* renderer = new Renderer(scene, shaderProgramme);
+    Renderer* renderer = new Renderer(scene, shaderProgramme, shaderProgrammeShadows);
 
     //framebuffer for shadow mapping
     unsigned int depthMapFBO;
@@ -176,6 +175,8 @@ int main()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "Framebuffer incomplete!\n";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     float quadVertices[] = {
@@ -197,13 +198,13 @@ int main()
     unsigned int quadVAO;
     glGenVertexArrays(1, &quadVAO);
     glBindVertexArray(quadVAO);
+    glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), quadVertices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    glBufferData(GL_ARRAY_BUFFER, 24*sizeof(float), quadVertices, GL_STATIC_DRAW);
 
     Shader* vertexShaderTexture = new VertexShader("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Rendering\\emptyVertexShader.vert");
     vertexShaderTexture->createShader();
@@ -212,7 +213,7 @@ int main()
     fragmentShaderTexture->createShader();
     fragmentShaderTexture->compileShader();
     std::shared_ptr<ShaderProgramme> shaderProgrammeTexture = std::make_shared<ShaderProgramme>(vertexShaderTexture, fragmentShaderTexture);
-    shaderProgrammeTexture->useProgramme();
+    
 
     //render loop with double buffering
     while (!glfwWindowShouldClose(window))
@@ -226,18 +227,34 @@ int main()
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
         shaderProgrammeShadows->useProgramme();
         renderer->renderSceneToTexture();
+       
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         //here goes the standard render pass
-        /*glViewport(0, 0, 1200, 1000);
+        glViewport(0, 0, 1200, 1000);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //glBindTexture(GL_TEXTURE_2D, depthMap);
         shaderProgramme->useProgramme();
-        renderer->renderScene();*/
+        renderer->renderScene();
+
+
+        /*glViewport(0, 0, 1200, 1000);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+        shaderProgrammeTexture->useProgramme();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        GLint loc = glGetUniformLocation(shaderProgrammeTexture->getId(), "screenTexture");
+        glUniform1i(loc, 0);
+        glBindVertexArray(quadVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);*/
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -52,6 +52,7 @@ class ShaderProgramme {
 		void setUniformsShadowShader(glm::mat4 lightTransformationMatrix, glm::mat4 modelMatrix);
 		void checkLinkingSuccess();
 		void useProgramme();
+		unsigned int getId();
 		~ShaderProgramme();
 
 
