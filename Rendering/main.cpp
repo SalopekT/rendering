@@ -179,6 +179,9 @@ int main()
         std::cout << "Framebuffer incomplete!\n";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+
     float quadVertices[] = {
         // positions   // texCoords
         -1.0f,  1.0f,  0.0f, 1.0f,
@@ -232,7 +235,6 @@ int main()
         renderer->renderSceneToTexture();
        
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         //here goes the standard render pass

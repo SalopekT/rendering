@@ -11,7 +11,7 @@ uniform mat4 lightSpaceMatrix;
 out vec3 Normal; //normals are needed in fragment shader because of lightning calculations
 out vec3 FragPos; //Frag position is position in world coordinates (view and projection transformations not applied)
 out vec2 TexCoord;
-out vec3 FragPositionLightSpace;
+out vec4 FragPositionLightSpace;
 
 void main()
 {
@@ -19,4 +19,5 @@ void main()
 	FragPos = vec3(model * vec4(aPos, 1.0f));
 	Normal = normal; //this Normal value is interpolated so that Phong shading works
 	TexCoord = aTexCoord; //just pass uvss to fragment shader
+	FragPositionLightSpace = lightSpaceMatrix * model * vec4(aPos, 1.0);
 }

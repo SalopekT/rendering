@@ -5,6 +5,7 @@
 in vec3 Normal;
 in vec3 FragPos;
 in vec2 TexCoord;
+in vec4 FragPositionLightSpace;
 
 out vec4 FragColor;
 
@@ -18,9 +19,26 @@ uniform vec3 lightDirection[MAX_LIGHTS]; //this is for light types that have dir
 uniform float lightCutoffAngle[MAX_LIGHTS]; //this is actually not an angle but a cosine of an angle
 uniform vec3 materialLightCoefs;
 uniform vec3 eyePosition;
+
 uniform sampler2D texture1;
+uniform sampler2D depthTexture;
 
 uniform bool hasTexture;
+
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    vec3 projectedCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projectedCoords = projectedCoords * 0.5 + 0.5;
+    float depthOfFragment = projectedCoords.z;
+    float sampledDepth = texture(depthTexture, projectedCoords.xy).r;
+    if (depthOfFragment > sampledDepth){
+        return 1.0;
+    }
+    return 0.0;
+
+}
+
     
 void main()
 {
@@ -76,7 +94,7 @@ void main()
 
         } 
     } 
-    vec3 color = ambientColor + totalDiffuse + totalSpecular;
+    vec3 color = ambientColor + ShadowCalculation(FragPositionLightSpace)*(totalDiffuse + totalSpecular);
     color = clamp(color, 0.0, 1.0);
     vec3 baseColor = texture(texture1, TexCoord).rgb;
 

@@ -96,6 +96,7 @@ void ShaderProgramme::setUniformsFragmentShader(int numLights, int* lightTypes, 
     int lightDirLoc = glGetUniformLocation(this->id, "lightDirection");
     int lightCutoffsLoc = glGetUniformLocation(this->id, "lightCutoffAngle");
     int eyePosLoc = glGetUniformLocation(this->id, "eyePosition");
+    int depthTextureLoc = glGetUniformLocation(this->id, "depthTexture");
 
     glUniform1i(numLightsLoc, numLights);
     glUniform1iv(typeLights, numLights, lightTypes);
@@ -104,6 +105,7 @@ void ShaderProgramme::setUniformsFragmentShader(int numLights, int* lightTypes, 
     glUniform3fv(lightDirLoc, numLights, glm::value_ptr(lightDirections[0]));
     glUniform1fv(lightCutoffsLoc, numLights, lightCutoffAngles);
     glUniform3f(eyePosLoc, eyePosition.x, eyePosition.y, eyePosition.z);
+    glUniform1i(depthTextureLoc, 1);
 
     
 
@@ -116,7 +118,7 @@ void ShaderProgramme::setObjectUniformsFragmentShader(glm::vec3 materialLightCoe
     glUniform3f(materialLightCoefsLoc, materialLightCoefs.x, materialLightCoefs.y, materialLightCoefs.z);
     if (hasTexture) {
         glUniform1i(textureLoc, 0);
-        glUniform1i(glGetUniformLocation(this->id, "hasTexture"), 1);
+        //glUniform1i(glGetUniformLocation(this->id, "hasTexture"), 1);
     }
     else {
         glUniform1i(glGetUniformLocation(this->id, "hasTexture"), 0);
@@ -125,9 +127,9 @@ void ShaderProgramme::setObjectUniformsFragmentShader(glm::vec3 materialLightCoe
 
 void ShaderProgramme::setUniformsShadowShader(glm::mat4 lightTransformationMatrix, glm::mat4 modelMatrix) {
     int lightTransformationLoc = glGetUniformLocation(this->id, "lightSpaceMatrix");
-    int modelLoc = glGetUniformLocation(this->id, "model");
+    //int modelLoc = glGetUniformLocation(this->id, "model");
     glUniformMatrix4fv(lightTransformationLoc, 1, GL_FALSE, glm::value_ptr(lightTransformationMatrix));
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+    //glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
 }
 
