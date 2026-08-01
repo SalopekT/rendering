@@ -179,7 +179,7 @@ int main()
         std::cout << "Framebuffer incomplete!\n";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, depthMap);
 
     float quadVertices[] = {

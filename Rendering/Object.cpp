@@ -113,6 +113,7 @@ bool Object::hasTexture() {
 }
 void Object::drawObject() {
     for (Mesh& mesh : this->meshes) {
+        glActiveTexture(GL_TEXTURE0);
         if (this->textureId != 0) glBindTexture(GL_TEXTURE_2D, this->textureId);
         mesh.drawMesh();
     }

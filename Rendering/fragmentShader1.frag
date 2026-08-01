@@ -94,7 +94,7 @@ void main()
 
         } 
     } 
-    vec3 color = ambientColor + ShadowCalculation(FragPositionLightSpace)*(totalDiffuse + totalSpecular);
+    vec3 color = ambientColor + (1-ShadowCalculation(FragPositionLightSpace))*(totalDiffuse + totalSpecular);
     color = clamp(color, 0.0, 1.0);
     vec3 baseColor = texture(texture1, TexCoord).rgb;
 
