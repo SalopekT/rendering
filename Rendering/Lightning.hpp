@@ -11,6 +11,8 @@ class Lightning {
 		glm::vec3 diffuseInt;
 		glm::vec3 specularInt;
 
+		float phi; //this is just current angle used for moving in circle
+
 	public:
 		Lightning(int type, glm::vec3 position, glm::vec3 ambientInt, glm::vec3 diffuseInt, glm::vec3 specularInt);
 		//glm::vec3 getIntensityInPoint(glm::vec3 pointPosition, glm::vec3 pointNormal, glm::vec3 kAmb, glm::vec3 kDif, glm::vec3 kSpec);
@@ -19,6 +21,8 @@ class Lightning {
 		int getType();
 		virtual glm::vec3 getDirection();
 		virtual float getCutoffAngle();
+
+		virtual void moveLightInCircle();
 };
 
 

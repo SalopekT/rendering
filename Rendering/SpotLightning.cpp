@@ -10,3 +10,9 @@ glm::vec3 SpotLightning::getDirection() {
 float SpotLightning::getCutoffAngle() {
 	return this->cutoffAngle;
 }
+
+void SpotLightning::moveLightInCircle() {
+	Lightning::moveLightInCircle();
+	this->direction = -this->getLightPosition();
+
+}

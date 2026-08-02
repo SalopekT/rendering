@@ -14,6 +14,7 @@ public:
 	//glm::vec3 getIntensityInPoint(glm::vec3 pointPosition, glm::vec3 pointNormal, glm::vec3 kAmb, glm::vec3 kDif, glm::vec3 kSpec);
 	glm::vec3 getDirection();
 	float getCutoffAngle();
+	void moveLightInCircle();
 };
 
 

@@ -65,8 +65,8 @@ int main()
     //light settings, multiple lights
     glm::vec3 light1Position(10, 10, 10);
     glm::vec3 light1Ambient(0.2f, 0.2f, 0.2f);  //ambient component of the first light source is main ambient component
-    glm::vec3 light1Diffuse(0.1f, 0.1f, 0.1f);
-    glm::vec3 light1Specular(0.1f, 0.1f, 0.1f);
+    glm::vec3 light1Diffuse(0.9f, 0.9f, 0.9f);
+    glm::vec3 light1Specular(0.9f, 0.9f, 0.9f);
     std::shared_ptr<Lightning> light1src = std::make_shared<Lightning>(1, light1Position, light1Ambient, light1Diffuse, light1Specular);
 
     glm::vec3 light2Position(5, -5, 10);
@@ -75,7 +75,7 @@ int main()
     glm::vec3 light2Specular(0.9f, 0.9f, 0.9f);
     //Lightning* light2Src = new Lightning(2,light2Position, light2Ambient, light2Diffuse, light2Specular);
     std::shared_ptr<Lightning> light2src = std::make_shared<SpotLightning>(light2Position, light2Ambient, light2Diffuse, light2Specular,
-                                                                            glm::vec3(-5.0, 5.0, -10.0), 0.9597);
+                                                                            glm::vec3(-5.0, 5.0, -10.0), 0.9197);
 
 
     //creating a floor object so i can show shadow mapping
@@ -112,6 +112,13 @@ int main()
     obj->setTextureFlag(true);
     obj->getTransform().setScale(glm::vec3{ 3.0f, 3.0f, 3.0f });
     obj->getTransform().setPosition(glm::vec3{ 0.0f, 0.0f, 3.0f });
+
+
+    std::shared_ptr<Object> obj2 = std::make_shared<Object>("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\armchair.fbx", "C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\armchair.jpg");
+    obj2->setMaterialCoeffs(glm::vec3{ 0.8f, 0.8f, 0.8f });
+    obj2->setTextureFlag(true);
+    obj2->getTransform().setScale(glm::vec3{ 3.0f, 3.0f, 3.0f });
+    obj2->getTransform().setPosition(glm::vec3{ 3.0f, 3.0f, 0.0f });
     //Object* obj = new Object("C:\\Users\\tinsa\\Projects\\Graphics\\Rendering\\Rendering\\Objects\\dragon.obj", "");
     //obj->print();
 
@@ -119,6 +126,7 @@ int main()
 
     //unsigned int VAOid = obj->getMesh(0).createBuffer(); //VAO already knows about its VBO
     obj->generateTexture();
+    obj2->generateTexture();
     
     /*unsigned int VAOid2 = obj2->getMesh(0).createBuffer();
     obj2->generateTexture();*/
@@ -127,6 +135,7 @@ int main()
     std::shared_ptr<Scene> scene= std::make_shared<Scene>();
     scene->addObject(obj);
     scene->addObject(floorObj);
+    scene->addObject(obj2);
     //scene->addLight(light1src);
     scene->addLight(light2src);
     scene->setCamera(cam);
@@ -242,6 +251,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //glBindTexture(GL_TEXTURE_2D, depthMap);
         shaderProgramme->useProgramme();
+        light2src->moveLightInCircle();
         renderer->renderScene();
 
 

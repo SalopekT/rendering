@@ -32,7 +32,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     projectedCoords = projectedCoords * 0.5 + 0.5;
     float depthOfFragment = projectedCoords.z;
     float sampledDepth = texture(depthTexture, projectedCoords.xy).r;
-    if (depthOfFragment > sampledDepth){
+    if (depthOfFragment - 0.005f > sampledDepth){
         return 1.0;
     }
     return 0.0;
